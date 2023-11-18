@@ -6,6 +6,7 @@
       <HelloWorld msg="You did it!" />
 
       <Button>test</Button>
+      <CustomIconTest className="custom-icon-class" />
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -17,10 +18,11 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import Button from "primevue/button"
+import { RouterLink, RouterView } from 'vue-router';
+import HelloWorld from './components/HelloWorld.vue';
+import Button from "primevue/button";
 import { useCounterStore } from '@/stores/counter';
+import CustomIconTest from '@/icons/CustomIconTest.vue';
 
 const counterStore = useCounterStore();
 counterStore.increment(); // use store function for example loading data (loadData())
