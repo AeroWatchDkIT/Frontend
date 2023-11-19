@@ -1,4 +1,4 @@
 export interface Test {
-    name: string;
-    age: number;
+  name: string;
+  age: number;
 }

@@ -1,12 +1,18 @@
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img
+      alt="Vue logo"
+      class="logo"
+      src="@/assets/logo.svg"
+      width="125"
+      height="125"
+    />
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
 
-      <Button>test</Button>
-      <CustomIconTest className="custom-icon-class" />
+      <Button @click="testFunction()">test</Button>
+      <CustomIconTest class-name="custom-icon-class" />
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -18,14 +24,17 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router';
-import HelloWorld from './components/HelloWorld.vue';
+import { RouterLink, RouterView } from "vue-router";
+import HelloWorld from "./components/HelloWorld.vue";
 import Button from "primevue/button";
-import { useCounterStore } from '@/stores/counter';
-import CustomIconTest from '@/icons/CustomIconTest.vue';
+import { useCounterStore } from "@/stores/counter";
+import CustomIconTest from "@/icons/CustomIconTest.vue";
 
 const counterStore = useCounterStore();
-counterStore.increment(); // use store function for example loading data (loadData())
+
+function testFunction(): void {
+  counterStore.loadTestData();
+}
 </script>
 
 <style scoped lang="scss">

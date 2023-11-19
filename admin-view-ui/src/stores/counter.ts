@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia';
-import { UserService } from '@/services';
+import { defineStore } from "pinia";
+import { UserService } from "@/services";
 
 interface CounterState {
   count: number;
@@ -7,10 +7,10 @@ interface CounterState {
   isEnabled: boolean;
 }
 
-export const useCounterStore = defineStore('counter', {
+export const useCounterStore = defineStore("counter", {
   state: (): CounterState => ({
     count: 0,
-    message: 'Hello, Pinia!',
+    message: "Hello, Pinia!",
     isEnabled: true,
   }),
 
@@ -18,6 +18,7 @@ export const useCounterStore = defineStore('counter', {
     async loadTestData() {
       const testMessage = await UserService.getTest();
       this.message = testMessage;
+      console.log("testMessage", testMessage);
     },
 
     increment() {
