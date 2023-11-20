@@ -35,15 +35,15 @@ Vue Language Features (Volar)
 ```
 // Code/User/settings.json
 "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-    },
-    "[vue]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-      },
-      "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-      },
+"editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+},
+"[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+},
+"[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+},
 ```
 
 ### Customize configuration
