@@ -11,7 +11,10 @@ Install NodeJS
 ```
 npm install -g @vue/cli
 ```
-
+## NPM setup
+```
+npm install primeview
+```
 ## Project setup
 ```
 npm install
