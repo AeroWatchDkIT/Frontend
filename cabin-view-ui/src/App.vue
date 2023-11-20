@@ -1,8 +1,3 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
-</script>
-
 <template>
   <header>
     <img
@@ -16,6 +11,8 @@ import HelloWorld from "./components/HelloWorld.vue";
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
 
+      <Button @click="testFunction()">test</Button>
+      <CustomIconTest class-name="custom-icon-class" />
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -26,7 +23,21 @@ import HelloWorld from "./components/HelloWorld.vue";
   <RouterView />
 </template>
 
-<style scoped>
+<script setup lang="ts">
+import { RouterLink, RouterView } from "vue-router";
+import HelloWorld from "./components/HelloWorld.vue";
+import Button from "primevue/button";
+import { useCounterStore } from "@/stores/counter";
+import CustomIconTest from "@/icons/CustomIconTest.vue";
+
+const counterStore = useCounterStore();
+
+function testFunction(): void {
+  counterStore.loadTestData();
+}
+</script>
+
+<style scoped lang="scss">
 header {
   line-height: 1.5;
   max-height: 100vh;

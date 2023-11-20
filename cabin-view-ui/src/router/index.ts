@@ -9,7 +9,6 @@ const router = createRouter({
       name: "home",
       component: HomeView,
     },
-    // Use the routing method below. We can make embedded routing in the future - Vincent
     {
       path: "/about",
       name: "about",
