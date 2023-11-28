@@ -19,6 +19,6 @@ body {
 }
 
 #app {
-  display: flex;
+  display: block;
 }
 </style>
