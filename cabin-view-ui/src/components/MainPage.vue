@@ -1,7 +1,13 @@
 <template>
   <div class="main-container">
     <img :src="props.cameraFeedUrl" alt="Camera Feed" class="camera-feed" />
-    <Button class="table-button" text raised rounded>
+    <Button
+      class="table-button"
+      text
+      raised
+      rounded
+      @click="$router.push('/tables')"
+    >
       <template #icon> <PalletIcon class="pallet-icon" /> </template>
     </Button>
   </div>
@@ -24,7 +30,7 @@ const props = defineProps({
 
 .table-button {
   position: absolute;
-  top: 5%;
+  top: 2%;
   right: 2%;
   width: 3rem;
   height: 3rem;

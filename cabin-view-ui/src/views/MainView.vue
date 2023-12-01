@@ -11,14 +11,23 @@ import MainPage from "@/components/MainPage.vue";
 import { ref, onMounted } from "vue";
 const cameraOn = ref(true);
 const cameraFeedUrl = ref("http://192.168.1.11:5000/video_feed");
+const cameraStatus = ref();
 
 onMounted(() => {
-  runMainPage();
+  //runMainPage();
 });
 
 function runMainPage(): void {
-  //loop every 3 seconds to check if camera is on
-  //if(camera is on){cameraOn.value = true}
+  setInterval(async () => {
+    const response = await fetch(cameraFeedUrl.value);
+    const data = await response.json();
+    cameraStatus.value = data.status;
+    if (cameraStatus.value !== "on") {
+      console.log("someProperty is true");
+      cameraOn.value = true;
+      return;
+    }
+  }, 3000);
 }
 </script>
 
