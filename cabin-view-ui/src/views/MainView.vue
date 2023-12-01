@@ -10,7 +10,7 @@ import RebootPage from "@/components/RebootPage.vue";
 import MainPage from "@/components/MainPage.vue";
 import { ref, onMounted } from "vue";
 const cameraOn = ref(true);
-const cameraFeedUrl = ref("test");
+const cameraFeedUrl = ref("http://192.168.1.11:5000/video_feed");
 
 onMounted(() => {
   runMainPage();
