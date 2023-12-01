@@ -5,11 +5,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-function runMainPage() {
-  //if(camera is on){go to main page}
-}
-</script>
+<script setup lang="ts"></script>
 
 <style scoped lang="scss">
 .spinner {
