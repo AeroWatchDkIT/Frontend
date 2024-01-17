@@ -10,15 +10,52 @@
     >
       <template #icon> <PalletIcon class="pallet-icon" /> </template>
     </Button>
+    <Button label="Alert" @click="showAlertDialog"></Button>
+    <input v-model="pallet" placeholder="Type something..." />
+    <input v-model="shelf" placeholder="Type something else..." />
+    <DynamicDialog />
   </div>
 </template>
 
 <script setup lang="ts">
 import Button from "primevue/button";
 import PalletIcon from "@/icons/PalletIcon.vue";
+import DynamicDialog from "primevue/dynamicdialog";
+import AlertModal from "./AlertModal.vue";
+import { useDialog } from "primevue/usedialog";
+import { ref, watch } from "vue";
 const props = defineProps({
   cameraFeedUrl: String,
 });
+const dialog = useDialog();
+const pallet = ref("ABC");
+const shelf = ref("ABC");
+watch([pallet, shelf], ([newInputValue1, newInputValue2]) => {
+  if (newInputValue1 !== newInputValue2) {
+    showAlertDialog();
+  }
+});
+
+function showAlertDialog(): void {
+  dialog.open(AlertModal, {
+    props: {
+      style: {
+        width: "30vw",
+      },
+      breakpoints: {
+        "960px": "75vw",
+        "640px": "90vw",
+      },
+      modal: true,
+      closable: false,
+    },
+    data: {
+      pallet: pallet.value,
+      shelf: shelf.value,
+    },
+    showHeader: false,
+  });
+}
 </script>
 
 <style scoped lang="scss">
