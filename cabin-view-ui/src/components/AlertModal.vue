@@ -11,7 +11,7 @@
     />
     <AlertIcon class="alert-icon" />
     <h2 class="warning-text">
-      Placing Pallet "{{ pallet }}" on shelf "{{ shelf }}"
+      Placing Pallet "{{ pallet }}" on shelf "{{ place }}"
     </h2>
   </div>
 </template>
@@ -24,7 +24,7 @@ import type { DialogPassThroughAttributes } from "primevue/dialog";
 
 const dialogRef: DialogPassThroughAttributes | undefined = inject("dialogRef");
 const pallet = dialogRef?.value.data.pallet;
-const shelf = dialogRef?.value.data.shelf;
+const place = dialogRef?.value.data.place;
 
 function closeDialog(): void {
   dialogRef?.value.close();

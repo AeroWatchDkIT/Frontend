@@ -12,7 +12,7 @@
     </Button>
     <Button label="Alert" @click="showAlertDialog"></Button>
     <input v-model="pallet" placeholder="Type something..." />
-    <input v-model="shelf" placeholder="Type something else..." />
+    <input v-model="place" placeholder="Type something else..." />
     <DynamicDialog />
   </div>
 </template>
@@ -29,9 +29,10 @@ const props = defineProps({
 });
 const dialog = useDialog();
 const pallet = ref("ABC");
-const shelf = ref("ABC");
-watch([pallet, shelf], ([newInputValue1, newInputValue2]) => {
-  if (newInputValue1 !== newInputValue2) {
+const place = ref("forklift");
+
+watch(place, (newPlace, oldPlace) => {
+  if (oldPlace === "forklift" && newPlace !== pallet.value) {
     showAlertDialog();
   }
 });
@@ -52,7 +53,7 @@ function showAlertDialog(): void {
     },
     data: {
       pallet: pallet.value,
-      shelf: shelf.value,
+      place: place.value,
     },
   });
 }

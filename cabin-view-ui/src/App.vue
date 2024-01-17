@@ -6,6 +6,17 @@
 
 <script setup lang="ts">
 import { RouterView } from "vue-router";
+import { ref, onMounted } from "vue";
+import { usePalletStatusStore } from "@/stores/palletStatusStore";
+import type { PalletStatuses } from "@/types/palletStatus";
+
+const palletStatusStore = usePalletStatusStore();
+const palletStatus = ref([] as PalletStatuses[]);
+
+onMounted(async () => {
+  await palletStatusStore.loadTestData();
+  palletStatus.value = palletStatusStore.palletStatus;
+});
 </script>
 
 <style lang="scss">

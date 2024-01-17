@@ -1,1 +1,1 @@
-export { default as UserService } from "./test";
+export { default as PalletStatusService } from "./palletStatus";
