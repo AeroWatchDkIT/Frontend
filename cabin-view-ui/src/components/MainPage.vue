@@ -48,12 +48,12 @@ function showAlertDialog(): void {
       },
       modal: true,
       closable: false,
+      showHeader: false,
     },
     data: {
       pallet: pallet.value,
       shelf: shelf.value,
     },
-    showHeader: false,
   });
 }
 </script>

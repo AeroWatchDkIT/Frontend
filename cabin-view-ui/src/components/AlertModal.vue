@@ -32,10 +32,6 @@ function closeDialog(): void {
 </script>
 
 <style scoped lang="scss">
-:deep(.p-dialog .p-dialog-header) {
-  display: none;
-}
-
 .back-button {
   position: absolute;
   top: 2%;
