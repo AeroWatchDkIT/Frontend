@@ -3,7 +3,7 @@ import "./assets/main.css";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import PrimeVue from "primevue/config";
-import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
+import "primevue/resources/themes/lara-light-cyan/theme.css";
 import 'primeicons/primeicons.css'
 import DialogService from 'primevue/dialogservice';
 

@@ -1,6 +1,9 @@
 <template>
   <div class="main-container">
     <img :src="props.cameraFeedUrl" alt="Camera Feed" class="camera-feed" />
+    <div v-if="recognizedText" style="color: green">
+      Recognized Text: {{ recognizedText }} at {{ recognitionTime }}
+    </div>
     <Button
       class="table-button"
       text
@@ -26,6 +29,8 @@ import { useDialog } from "primevue/usedialog";
 import { ref, watch } from "vue";
 const props = defineProps({
   cameraFeedUrl: String,
+  recognizedText: String,
+  recognitionTime: String,
 });
 const dialog = useDialog();
 const pallet = ref("ABC");
