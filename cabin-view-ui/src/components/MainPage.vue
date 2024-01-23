@@ -1,8 +1,8 @@
 <template>
   <div class="main-container">
     <img :src="props.cameraFeedUrl" alt="Camera Feed" class="camera-feed" />
-    <div v-if="recognizedText" style="color: green">
-      Recognized Text: {{ recognizedText }} at {{ recognitionTime }}
+    <div style="color: green">
+      Recognized Text: {{ props.recognizedText }} at {{ props.recognitionTime }}
     </div>
     <Button
       class="table-button"
@@ -67,7 +67,8 @@ function showAlertDialog(): void {
 <style scoped lang="scss">
 .camera-feed {
   width: 100%;
-  height: 100%;
+  max-height: 100vh;
+  min-width: 100vw;
   object-fit: cover;
 }
 
@@ -77,6 +78,7 @@ function showAlertDialog(): void {
   right: 2%;
   width: 3rem;
   height: 3rem;
+  background-color: var(--cyan-100);
 }
 
 .pallet-icon {

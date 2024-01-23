@@ -10,6 +10,15 @@
 
 {"Name": "JKL", "Place": "Room p231"}, 
 
+ {"Name": "MNO", "Place": "Missing"},
+ {"Name": "ABC", "Place": "Stevens forklift"}, 
+
+{"Name": "DEF", "Place": "Shelf DEF"}, 
+
+{"Name": "GHI", "Place": "Shelf XYZ"}, 
+
+{"Name": "JKL", "Place": "Room p231"}, 
+
  {"Name": "MNO", "Place": "Missing"}
 
 ] 

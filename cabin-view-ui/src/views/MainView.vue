@@ -16,7 +16,7 @@ import MainPage from "@/components/MainPage.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 
 const cameraOn = ref(false);
-const cameraFeedUrl = ref("http://192.168.1.11:5000/video_feed");
+const cameraFeedUrl = ref("http://192.168.16.126:5001/video_feed");
 const cameraStatus = ref();
 const recognizedText = ref("");
 const recognitionTime = ref("");
@@ -36,7 +36,9 @@ onUnmounted(() => {
 
 async function fetchRecognizedText(): Promise<void> {
   try {
-    const response = await fetch("http://192.168.1.11:5001/get_detected_text");
+    const response = await fetch(
+      "http://192.168.16.126:5001/get_detected_text",
+    );
     console.log("Response:", response);
     if (response.ok) {
       const data = await response.json();

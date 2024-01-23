@@ -1,13 +1,5 @@
 <template>
   <div class="table-page-container">
-    <Button
-      class="back-button"
-      icon="pi pi-arrow-left"
-      text
-      rounded
-      aria-label="Filter"
-      @click="$router.push('/')"
-    />
     <TheTable class="table" />
   </div>
 </template>

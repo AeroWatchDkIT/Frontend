@@ -15,14 +15,14 @@
     >
       <template #header>
         <div class="flex justify-content-between">
-          <span class="text-xl text-900 font-bold">Pallets</span>
           <Button
-            type="button"
-            icon="pi pi-filter-slash"
-            label="Clear"
-            outlined
-            @click="clearFilter()"
+            class="back-button"
+            icon="pi pi-arrow-left"
+            rounded
+            aria-label="Filter"
+            @click="$router.push('/')"
           />
+          <span class="text-xl text-900 font-bold">Pallets</span>
         </div>
       </template>
       <template #empty> No customers found. </template>
