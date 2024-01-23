@@ -76,15 +76,15 @@ function showAlertDialog(): void {
   position: absolute;
   top: 2%;
   right: 2%;
-  width: 3rem;
-  height: 3rem;
+  width: 5rem;
+  height: 5rem;
   background-color: var(--cyan-100);
 }
 
 .pallet-icon {
   padding-top: 0.5rem;
-  width: 3rem;
-  height: 3rem;
+  width: 5rem;
+  height: 5rem;
   color: white;
 }
 </style>

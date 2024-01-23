@@ -13,16 +13,16 @@
       paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       current-page-report-template="{first} to {last} of {totalRecords}"
     >
-      <template #header>
-        <div class="flex justify-content-between">
-          <Button
-            class="back-button"
-            icon="pi pi-arrow-left"
-            rounded
-            aria-label="Filter"
-            @click="$router.push('/')"
-          />
-          <span class="text-xl text-900 font-bold">Pallets</span>
+      <template #header
+        ><Button
+          class="back-button"
+          icon="pi pi-arrow-left"
+          rounded
+          aria-label="Filter"
+          @click="$router.push('/')"
+        />
+        <div class="header-div">
+          <span class="table-header">Pallets</span>
         </div>
       </template>
       <template #empty> No customers found. </template>
@@ -96,4 +96,14 @@ function clearFilter(): void {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.table-header {
+  font-size: 2rem;
+}
+
+.header-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

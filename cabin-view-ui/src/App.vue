@@ -32,5 +32,6 @@ body {
 #app {
   display: block;
   padding: 0;
+  overflow: hidden;
 }
 </style>

@@ -44,8 +44,14 @@ async function fetchRecognizedText(): Promise<void> {
       const data = await response.json();
       recognizedText.value = data.detected_text;
       recognitionTime.value = data.detection_time; // Update time
+      console.log(data);
       console.log("Fetched text:", data.detected_text); // Log the fetched text
       console.log("Detection time:", data.detection_time); // Log the detection time
+      cameraStatus.value = data.status;
+      if (cameraStatus.value !== "on") {
+        console.log("someProperty is true");
+        cameraOn.value = true;
+      }
     } else {
       console.error("Error fetching recognized text");
     }
