@@ -10,9 +10,9 @@
       @click="closeDialog()"
     />
     <AlertIcon class="alert-icon" />
-    <h2 class="warning-text">
+    <h1 class="warning-text">
       Placing Pallet "{{ pallet }}" on shelf "{{ place }}"
-    </h2>
+    </h1>
   </div>
 </template>
 
@@ -45,6 +45,8 @@ function closeDialog(): void {
 }
 
 .warning-text {
+  margin: 0rem;
   text-align: center;
+  font-weight: 400;
 }
 </style>

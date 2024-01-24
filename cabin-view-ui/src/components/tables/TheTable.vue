@@ -4,17 +4,19 @@
       v-model:filters="filters"
       :value="palletStatus"
       paginator
+      reorderable-columns
+      removable-sort
       show-gridlines
       filter-display="menu"
-      :rows="10"
+      :rows="5"
       data-key="id"
       :rows-per-page-options="[5, 10, 20, 50]"
-      table-style="min-width: 50rem"
+      table-style="min-width: 50rem; min-height: 67.8vh;"
       paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       current-page-report-template="{first} to {last} of {totalRecords}"
     >
-      <template #header
-        ><Button
+      <template #header>
+        <Button
           class="back-button"
           icon="pi pi-arrow-left"
           rounded
@@ -27,7 +29,7 @@
       </template>
       <template #empty> No customers found. </template>
       <template #loading> Loading customers data. Please wait. </template>
-      <Column field="Name" header="Name" style="min-width: 12rem">
+      <Column field="Name" header="Name" style="min-width: 12rem" sortable>
         <template #body="{ data }">
           {{ data.Name }}
         </template>
@@ -40,7 +42,7 @@
           />
         </template>
       </Column>
-      <Column field="Place" header="Place" style="min-width: 12rem">
+      <Column field="Place" header="Place" style="min-width: 12rem" sortable>
         <template #body="{ data }">
           {{ data.Place }}
         </template>
@@ -102,6 +104,7 @@ function clearFilter(): void {
 }
 
 .header-div {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
