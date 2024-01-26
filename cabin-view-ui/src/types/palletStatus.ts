@@ -1,4 +1,4 @@
 export interface PalletStatuses {
-  Name: string;
-  Place: string;
+  name: string;
+  place: string;
 }

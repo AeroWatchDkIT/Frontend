@@ -11,7 +11,7 @@
       :rows="5"
       data-key="id"
       :rows-per-page-options="[5, 10, 20, 50]"
-      table-style="min-width: 50rem; min-height: 67.8vh;"
+      table-style="min-width: 100vw; height: fit-content;"
       paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       current-page-report-template="{first} to {last} of {totalRecords}"
     >
@@ -24,14 +24,26 @@
           @click="$router.push('/')"
         />
         <div class="header-div">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search" />
+            <InputText v-model="searchName" placeholder="Search" />
+          </span>
           <span class="table-header">Pallets</span>
+          <Dropdown
+            v-model="selectedState"
+            :options="cities"
+            show-clear
+            option-label="name"
+            placeholder="Select a City"
+            class="w-full md:w-14rem"
+          />
         </div>
       </template>
       <template #empty> No customers found. </template>
       <template #loading> Loading customers data. Please wait. </template>
-      <Column field="Name" header="Name" style="min-width: 12rem" sortable>
+      <Column field="name" header="Name" style="min-width: 12rem" sortable>
         <template #body="{ data }">
-          {{ data.Name }}
+          {{ data.name }}
         </template>
         <template #filter="{ filterModel }">
           <InputText
@@ -42,9 +54,9 @@
           />
         </template>
       </Column>
-      <Column field="Place" header="Place" style="min-width: 12rem" sortable>
+      <Column field="place" header="Place" style="min-width: 12rem" sortable>
         <template #body="{ data }">
-          {{ data.Place }}
+          {{ data.place }}
         </template>
         <template #filter="{ filterModel }">
           <InputText
@@ -64,15 +76,24 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+import Dropdown from "primevue/dropdown";
 import { ref, onMounted } from "vue";
 import { usePalletStatusStore } from "@/stores/palletStatusStore";
 import type { PalletStatuses } from "@/types/palletStatus";
 import { FilterMatchMode, FilterOperator } from "primevue/api";
 
 const filters = ref();
-
 const palletStatusStore = usePalletStatusStore();
 const palletStatus = ref([] as PalletStatuses[]);
+const searchName = ref("");
+const selectedState = ref("");
+const cities = ref([
+  { name: "New York", code: "NY" },
+  { name: "Rome", code: "RM" },
+  { name: "London", code: "LDN" },
+  { name: "Istanbul", code: "IST" },
+  { name: "Paris", code: "PRS" },
+]);
 
 onMounted(async () => {
   await palletStatusStore.loadTestData();
@@ -82,19 +103,15 @@ onMounted(async () => {
 
 function initFilters(): void {
   filters.value = {
-    Name: {
+    name: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    Place: {
+    place: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
   };
-}
-
-function clearFilter(): void {
-  initFilters();
 }
 </script>
 
