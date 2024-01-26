@@ -14,7 +14,7 @@ const palletStatusStore = usePalletStatusStore();
 const palletStatus = ref([] as PalletStatuses[]);
 
 onMounted(async () => {
-  await palletStatusStore.loadTestData();
+  await palletStatusStore.loadData();
   palletStatus.value = palletStatusStore.palletStatus;
 });
 </script>

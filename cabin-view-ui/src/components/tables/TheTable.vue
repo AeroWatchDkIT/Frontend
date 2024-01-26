@@ -26,7 +26,11 @@
         <div class="header-div">
           <span class="p-input-icon-left">
             <i class="pi pi-search" />
-            <InputText v-model="searchName" placeholder="Search" />
+            <InputText
+              v-model="searchName"
+              placeholder="Search"
+              @input="searchPallet"
+            />
           </span>
           <span class="table-header">Pallets</span>
           <Dropdown
@@ -77,14 +81,12 @@ import Column from "primevue/column";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { usePalletStatusStore } from "@/stores/palletStatusStore";
-import type { PalletStatuses } from "@/types/palletStatus";
 import { FilterMatchMode, FilterOperator } from "primevue/api";
 
 const filters = ref();
 const palletStatusStore = usePalletStatusStore();
-const palletStatus = ref([] as PalletStatuses[]);
 const searchName = ref("");
 const selectedState = ref("");
 const cities = ref([
@@ -94,10 +96,9 @@ const cities = ref([
   { name: "Istanbul", code: "IST" },
   { name: "Paris", code: "PRS" },
 ]);
+const palletStatus = computed(() => palletStatusStore.palletStatus);
 
 onMounted(async () => {
-  await palletStatusStore.loadTestData();
-  palletStatus.value = palletStatusStore.palletStatus;
   initFilters();
 });
 
@@ -112,6 +113,14 @@ function initFilters(): void {
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
   };
+}
+
+async function searchPallet(): Promise<void> {
+  if (searchName.value.trim() === "") {
+    await palletStatusStore.loadData();
+  } else {
+    await palletStatusStore.searchPallet(searchName.value);
+  }
 }
 </script>
 
