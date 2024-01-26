@@ -11,7 +11,7 @@
       :rows="5"
       data-key="id"
       :rows-per-page-options="[5, 10, 20, 50]"
-      table-style="min-width: 100vw; height: fit-content;"
+      table-style="height:72vh;"
       paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       current-page-report-template="{first} to {last} of {totalRecords}"
     >
@@ -20,7 +20,10 @@
           class="back-button"
           icon="pi pi-arrow-left"
           rounded
+          text
+          severity="secondary"
           aria-label="Filter"
+          size="large"
           @click="$router.push('/')"
         />
         <div class="header-div">
@@ -29,17 +32,21 @@
             <InputText
               v-model="searchName"
               placeholder="Search"
+              class="searchbar"
               @input="searchPallet"
             />
           </span>
-          <span class="table-header">Pallets</span>
+          <span v-if="selectedState && selectedState.name" class="table-header"
+            >{{ selectedState.name }} Pallets</span
+          >
+          <span v-else class="table-header">Pallets</span>
           <Dropdown
             v-model="selectedState"
-            :options="cities"
+            :options="states"
             show-clear
             option-label="name"
-            placeholder="Select a City"
-            class="w-full md:w-14rem"
+            placeholder="All"
+            class="dropdown"
           />
         </div>
       </template>
@@ -84,17 +91,18 @@ import Dropdown from "primevue/dropdown";
 import { ref, onMounted, computed } from "vue";
 import { usePalletStatusStore } from "@/stores/palletStatusStore";
 import { FilterMatchMode, FilterOperator } from "primevue/api";
+import type { PalletStates } from "@/types/palletStatus";
 
 const filters = ref();
 const palletStatusStore = usePalletStatusStore();
 const searchName = ref("");
-const selectedState = ref("");
-const cities = ref([
-  { name: "New York", code: "NY" },
-  { name: "Rome", code: "RM" },
-  { name: "London", code: "LDN" },
-  { name: "Istanbul", code: "IST" },
-  { name: "Paris", code: "PRS" },
+const selectedState = ref<PalletStates | null>(null);
+const states = ref<PalletStates[]>([
+  { name: "Misplaced", value: "Misplaced" },
+  { name: "In Place", value: "InPlace" },
+  { name: "On Floor", value: "OnFloor" },
+  { name: "Missing", value: "Missing" },
+  { name: "In Transit", value: "InTransit" },
 ]);
 const palletStatus = computed(() => palletStatusStore.palletStatus);
 
@@ -122,6 +130,17 @@ async function searchPallet(): Promise<void> {
     await palletStatusStore.searchPallet(searchName.value);
   }
 }
+
+async function loadDropdownValue(): Promise<void> {
+  if (selectedState.value) {
+    const { name, value } = selectedState.value;
+    // Do something with the values, for example, log them
+    console.log("Selected State Name:", name);
+    console.log("Selected State Value:", value);
+  } else {
+    console.log("No state selected.");
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -130,9 +149,18 @@ async function searchPallet(): Promise<void> {
 }
 
 .header-div {
+  margin-top: 2.5vh;
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+}
+
+.searchbar {
+  width: 25rem;
+}
+
+.dropdown {
+  width: 25rem;
 }
 </style>

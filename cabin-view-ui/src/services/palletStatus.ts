@@ -11,6 +11,11 @@ export default class PalletStatusService {
     return await PalletStatusService.fetchData(apiUrl);
   }
 
+  static async getDataByPalletStatus(palletStatus: string): Promise<PalletStatuses[]> {
+    const apiUrl = `https://localhost:7128/PalletStatuses?filterTerm=${palletStatus.trim()}`;
+    return await PalletStatusService.fetchData(apiUrl);
+  }
+
   private static async fetchData(apiUrl: string): Promise<PalletStatuses[]> {
     try {
       const response = await fetch(apiUrl);
