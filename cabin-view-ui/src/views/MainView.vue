@@ -7,6 +7,11 @@
       :recognized-text="recognizedText"
     />
     <RebootPage v-else />
+    <input
+      v-model="recognizedText"
+      class="testText"
+      placeholder="Type something else..."
+    />
   </div>
 </template>
 
@@ -24,8 +29,8 @@ const fetchInterval = ref<number | null>(null);
 
 onMounted(async () => {
   checkCameraStatus();
-  fetchRecognizedText(); // Initial fetch
-  fetchInterval.value = setInterval(fetchRecognizedText, 5000); // Fetch every 5 seconds
+  fetchRecognizedText();
+  fetchInterval.value = setInterval(fetchRecognizedText, 5000);
 });
 
 onUnmounted(() => {
@@ -43,10 +48,10 @@ async function fetchRecognizedText(): Promise<void> {
     if (response.ok) {
       const data = await response.json();
       recognizedText.value = data.detected_text;
-      recognitionTime.value = data.detection_time; // Update time
+      recognitionTime.value = data.detection_time;
       console.log(data);
-      console.log("Fetched text:", data.detected_text); // Log the fetched text
-      console.log("Detection time:", data.detection_time); // Log the detection time
+      console.log("Fetched text:", data.detected_text);
+      console.log("Detection time:", data.detection_time);
       cameraStatus.value = data.status;
       if (cameraStatus.value !== "on") {
         console.log("someProperty is true");
@@ -82,4 +87,11 @@ function checkCameraStatus(): void {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.testText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+</style>

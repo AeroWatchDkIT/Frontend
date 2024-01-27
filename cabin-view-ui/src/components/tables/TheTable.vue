@@ -11,7 +11,7 @@
       :rows="5"
       data-key="id"
       :rows-per-page-options="[5, 10, 20, 50]"
-      table-style="height:72vh;"
+      table-style="height:75vh;"
       paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       current-page-report-template="{first} to {last} of {totalRecords}"
     >

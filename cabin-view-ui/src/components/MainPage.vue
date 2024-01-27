@@ -1,9 +1,6 @@
 <template>
   <div class="main-container">
     <img :src="props.cameraFeedUrl" alt="Camera Feed" class="camera-feed" />
-    <div style="color: green">
-      Recognized Text: {{ props.recognizedText }} at {{ props.recognitionTime }}
-    </div>
     <Button
       class="table-button"
       text
@@ -13,10 +10,16 @@
     >
       <template #icon> <PalletIcon class="pallet-icon" /> </template>
     </Button>
-    <Button label="Alert" @click="showAlertDialog"></Button>
-    <input v-model="pallet" placeholder="Type something..." />
-    <input v-model="place" placeholder="Type something else..." />
+    <div class="alertTest">
+      <Button label="Alert" @click="showAlertDialog"></Button>
+      <input v-model="pallet" placeholder="Type something..." />
+      <input v-model="place" placeholder="Type something else..." />
+    </div>
     <DynamicDialog />
+    <CameraInfoToast
+      :recognition-time="props.recognitionTime"
+      :recognized-text="props.recognizedText"
+    />
   </div>
 </template>
 
@@ -24,6 +27,7 @@
 import Button from "primevue/button";
 import PalletIcon from "@/icons/PalletIcon.vue";
 import DynamicDialog from "primevue/dynamicdialog";
+import CameraInfoToast from "./CameraInfoToast.vue";
 import AlertModal from "./AlertModal.vue";
 import { useDialog } from "primevue/usedialog";
 import { ref, watch } from "vue";
@@ -86,5 +90,14 @@ function showAlertDialog(): void {
   width: 5rem;
   height: 5rem;
   color: white;
+}
+
+.alertTest {
+  position: absolute;
+  top: 5%;
+  left: 0%;
+  width: 5rem;
+  height: 5rem;
+  background-color: var(--cyan-100);
 }
 </style>
