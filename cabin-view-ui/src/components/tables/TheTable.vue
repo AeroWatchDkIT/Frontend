@@ -33,7 +33,7 @@
               v-model="searchName"
               placeholder="Search"
               class="searchbar"
-              @input="searchPallet"
+              @input="searchPallet()"
             />
           </span>
           <span v-if="selectedState && selectedState.name" class="table-header"
@@ -47,11 +47,11 @@
             option-label="name"
             placeholder="All"
             class="dropdown"
+            @change="loadDropdownValue()"
           />
         </div>
       </template>
       <template #empty> No customers found. </template>
-      <template #loading> Loading customers data. Please wait. </template>
       <Column field="name" header="Name" style="min-width: 12rem" sortable>
         <template #body="{ data }">
           {{ data.name }}
@@ -133,12 +133,10 @@ async function searchPallet(): Promise<void> {
 
 async function loadDropdownValue(): Promise<void> {
   if (selectedState.value) {
-    const { name, value } = selectedState.value;
-    // Do something with the values, for example, log them
-    console.log("Selected State Name:", name);
-    console.log("Selected State Value:", value);
+    const { value } = selectedState.value;
+    await palletStatusStore.loadDataByPalletState(value);
   } else {
-    console.log("No state selected.");
+    await palletStatusStore.loadData();
   }
 }
 </script>
