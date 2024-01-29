@@ -2,16 +2,17 @@
   <div class="table-container">
     <DataTable
       v-model:filters="filters"
+      class="table"
       :value="palletStatus"
       paginator
       reorderable-columns
       removable-sort
       show-gridlines
       filter-display="menu"
-      :rows="5"
+      :rows="6"
       data-key="id"
-      :rows-per-page-options="[5, 10, 20, 50]"
-      table-style="height:75vh;"
+      :rows-per-page-options="[6, 10, 20, 50]"
+      table-style="height:100%;"
       paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       current-page-report-template="{first} to {last} of {totalRecords}"
     >
@@ -142,6 +143,15 @@ async function loadDropdownValue(): Promise<void> {
 </script>
 
 <style lang="scss" scoped>
+.table-container {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+.table {
+  width: 100%;
+  height: 100%;
+}
 .table-header {
   font-size: 2rem;
 }

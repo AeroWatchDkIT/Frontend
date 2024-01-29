@@ -51,6 +51,7 @@ function showAlertDialog(): void {
     props: {
       style: {
         width: "30vw",
+        borderRadius: "2rem",
       },
       breakpoints: {
         "960px": "75vw",
@@ -69,11 +70,13 @@ function showAlertDialog(): void {
 </script>
 
 <style scoped lang="scss">
+.main-container {
+  width: 100%;
+  height: 100vh;
+}
 .camera-feed {
   width: 100%;
-  max-height: 100vh;
-  min-width: 100vw;
-  object-fit: cover;
+  height: 100%;
 }
 
 .table-button {
