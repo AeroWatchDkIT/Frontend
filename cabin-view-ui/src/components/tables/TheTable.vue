@@ -9,9 +9,9 @@
       removable-sort
       show-gridlines
       filter-display="menu"
-      :rows="6"
+      :rows="5"
       data-key="id"
-      :rows-per-page-options="[6, 10, 20, 50]"
+      :rows-per-page-options="[5, 10, 20, 50]"
       table-style="height:100%;"
       paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       current-page-report-template="{first} to {last} of {totalRecords}"
@@ -52,7 +52,7 @@
           />
         </div>
       </template>
-      <template #empty> No customers found. </template>
+      <template #empty> No pallets found. </template>
       <Column field="name" header="Name" style="min-width: 12rem" sortable>
         <template #body="{ data }">
           {{ data.name }}
@@ -170,5 +170,9 @@ async function loadDropdownValue(): Promise<void> {
 
 .dropdown {
   width: 25rem;
+}
+.v-pagination {
+  /* Add your custom styles here */
+  background-color: red;
 }
 </style>

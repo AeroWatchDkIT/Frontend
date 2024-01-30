@@ -12,8 +12,6 @@
     </Button>
     <div class="alertTest">
       <Button label="Alert" @click="showAlertDialog"></Button>
-      <input v-model="pallet" placeholder="Type something..." />
-      <input v-model="place" placeholder="Type something else..." />
     </div>
     <DynamicDialog />
     <CameraInfoToast
@@ -86,6 +84,9 @@ function showAlertDialog(): void {
   width: 5rem;
   height: 5rem;
   background-color: var(--cyan-100);
+  :hover {
+    background-color: var(--cyan-200);
+  }
 }
 
 .pallet-icon {
@@ -97,10 +98,9 @@ function showAlertDialog(): void {
 
 .alertTest {
   position: absolute;
-  top: 5%;
+  top: 0%;
   left: 0%;
   width: 5rem;
   height: 5rem;
-  background-color: var(--cyan-100);
 }
 </style>

@@ -33,9 +33,9 @@ const toast = useToast();
 const visible = ref(false);
 
 watch(
-  () => props.recognizedText,
+  () => props.recognitionTime,
   (newValue) => {
-    if (newValue && !visible.value) {
+    if (newValue) {
       showTemplate();
     }
   },
@@ -47,7 +47,7 @@ function showTemplate(): void {
     summary: props.recognitionTime,
     detail: props.recognizedText,
     group: "bc",
-    life: 3000,
+    life: 5000,
   });
   visible.value = true;
 }
