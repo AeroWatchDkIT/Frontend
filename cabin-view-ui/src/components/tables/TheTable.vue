@@ -18,12 +18,12 @@
       :pt="{
         header: {
           style: {
-            height: '20vh',
+            height: isSmallScreen ? '25vh' : '20vh',
           },
         },
         wrapper: {
           style: {
-            height: '70vh',
+            height: isSmallScreen ? '65vh' : '70vh',
           },
         },
         paginator: {
@@ -109,7 +109,7 @@ import Column from "primevue/column";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import { usePalletStatusStore } from "@/stores/palletStatusStore";
 import { FilterMatchMode, FilterOperator } from "primevue/api";
 import type { PalletStates } from "@/types/palletStatus";
@@ -126,9 +126,15 @@ const states = ref<PalletStates[]>([
   { name: "In Transit", value: "InTransit" },
 ]);
 const palletStatus = computed(() => palletStatusStore.palletStatus);
+const isSmallScreen = ref(window.innerHeight <= 600);
 
 onMounted(async () => {
   initFilters();
+  window.addEventListener("resize", handleResize);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", handleResize);
 });
 
 function initFilters(): void {
@@ -142,6 +148,10 @@ function initFilters(): void {
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
   };
+}
+
+function handleResize(): void {
+  isSmallScreen.value = window.innerHeight <= 600;
 }
 
 async function searchPallet(): Promise<void> {
