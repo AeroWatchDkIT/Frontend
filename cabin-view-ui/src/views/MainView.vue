@@ -16,15 +16,16 @@ import MainPage from "@/components/MainPage.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 
 const cameraOn = ref(false);
-const cameraFeedUrl = ref("http://192.168.16.136:5001/video_feed");
-const cameraStatus = ref();
+const cameraFeedUrl = ref("");
 const recognizedText = ref("");
 const recognitionTime = ref("");
 const fetchInterval = ref<number | null>(null);
+const fetchCameraInterval = ref<number | null>(null);
 
 onMounted(async () => {
   checkCameraStatus();
   fetchRecognizedText();
+  fetchCameraInterval.value = setInterval(checkCameraStatus, 5000);
   fetchInterval.value = setInterval(fetchRecognizedText, 5000);
 });
 
@@ -32,12 +33,15 @@ onUnmounted(() => {
   if (fetchInterval.value) {
     clearInterval(fetchInterval.value);
   }
+  if (fetchCameraInterval.value) {
+    clearInterval(fetchCameraInterval.value);
+  }
 });
 
 async function fetchRecognizedText(): Promise<void> {
   try {
     const response = await fetch(
-      "http://192.168.16.136:5001/get_detected_text",
+      "http://192.168.92.136:5001/get_detected_text",
     );
     console.log("Response:", response);
     if (response.ok) {
@@ -47,11 +51,6 @@ async function fetchRecognizedText(): Promise<void> {
       console.log(data);
       console.log("Fetched text:", data.detected_text);
       console.log("Detection time:", data.detection_time);
-      cameraStatus.value = data.status;
-      if (cameraStatus.value !== "on") {
-        console.log("someProperty is true");
-        cameraOn.value = true;
-      }
     } else {
       console.error("Error fetching recognized text");
     }
@@ -60,25 +59,17 @@ async function fetchRecognizedText(): Promise<void> {
   }
 }
 
-function checkCameraStatus(): void {
-  // Simulating the case where camera status is "on"
-  cameraOn.value = true;
-
-  // Uncomment the following lines when actual fetching is implemented
-  /*
-    fetch(cameraFeedUrl.value)
-      .then(response => response.json())
-      .then(data => {
-        cameraStatus.value = data.status;
-        if (cameraStatus.value !== "on") {
-          console.log("someProperty is true");
-          cameraOn.value = true;
-        }
-      })
-      .catch(error => {
-        console.error("Error fetching camera status:", error);
-      });
-    */
+async function checkCameraStatus(): Promise<void> {
+  try {
+    const response = await fetch("http://192.168.92.136:5001/video_feed");
+    if (response.ok) {
+      cameraOn.value = true;
+    } else {
+      cameraOn.value = false;
+    }
+  } catch (error) {
+    cameraOn.value = false;
+  }
 }
 </script>
 
