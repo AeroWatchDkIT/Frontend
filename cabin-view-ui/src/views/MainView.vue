@@ -52,10 +52,10 @@ async function fetchRecognizedText(): Promise<void> {
       console.log("Fetched text:", data.detected_text);
       console.log("Detection time:", data.detection_time);
     } else {
-      console.error("Error fetching recognized text");
+      console.error("Error fetching recognized text bbbbb");
     }
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error aaaaa:", error);
   }
 }
 
@@ -65,10 +65,11 @@ async function checkCameraStatus(): Promise<void> {
     if (response.ok) {
       cameraOn.value = true;
     } else {
-      cameraOn.value = false;
+      console.log("Camera is not on");
     }
   } catch (error) {
-    cameraOn.value = false;
+    console.log("Camera is not on aaaaaa");
+    cameraOn.value = true;
   }
 }
 </script>

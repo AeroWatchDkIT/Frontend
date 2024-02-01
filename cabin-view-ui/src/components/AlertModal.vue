@@ -49,15 +49,4 @@ function closeDialog(): void {
   text-align: center;
   font-weight: 400;
 }
-
-:deep(.p-dialog .p-dialog-content:last-of-type) {
-  border-top-left-radius: 2rem;
-  border-top-right-radius: 2rem;
-  border-bottom-right-radius: 2rem;
-  border-bottom-left-radius: 2rem;
-}
-
-:deep(.p-dialog) {
-  border-radius: 2rem;
-}
 </style>

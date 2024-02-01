@@ -15,6 +15,26 @@
       table-style="height:100%;"
       paginator-template="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       current-page-report-template="{first} to {last} of {totalRecords}"
+      :pt="{
+        header: {
+          style: {
+            height: '20vh',
+          },
+        },
+        wrapper: {
+          style: {
+            height: '70vh',
+          },
+        },
+        paginator: {
+          style: {
+            height: '10vh',
+            position: 'absolute',
+            bottom: '0',
+            width: '100%',
+          },
+        },
+      }"
     >
       <template #header>
         <Button
@@ -170,9 +190,5 @@ async function loadDropdownValue(): Promise<void> {
 
 .dropdown {
   width: 25rem;
-}
-.v-pagination {
-  /* Add your custom styles here */
-  background-color: red;
 }
 </style>

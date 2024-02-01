@@ -13,7 +13,18 @@
     <div class="alertTest">
       <Button label="Alert" @click="showAlertDialog"></Button>
     </div>
-    <DynamicDialog />
+    <DynamicDialog
+      :pt="{
+        content: {
+          style: {
+            'border-top-left-radius': '2rem',
+            'border-top-right-radius': '2rem',
+            'border-bottom-right-radius': '2rem',
+            'border-bottom-left-radius': '2rem',
+          },
+        },
+      }"
+    />
     <CameraInfoToast
       :recognition-time="props.recognitionTime"
       :recognized-text="props.recognizedText"
