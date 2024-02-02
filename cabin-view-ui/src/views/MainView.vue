@@ -15,17 +15,14 @@ import RebootPage from "@/components/RebootPage.vue";
 import MainPage from "@/components/MainPage.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 
-const cameraOn = ref(false);
-const cameraFeedUrl = ref("");
+const cameraOn = ref(true);
+const cameraFeedUrl = ref("http://192.168.16.126:5001/video_feed");
 const recognizedText = ref("");
 const recognitionTime = ref("");
 const fetchInterval = ref<number | null>(null);
-const fetchCameraInterval = ref<number | null>(null);
 
 onMounted(async () => {
-  checkCameraStatus();
   fetchRecognizedText();
-  fetchCameraInterval.value = setInterval(checkCameraStatus, 5000);
   fetchInterval.value = setInterval(fetchRecognizedText, 5000);
 });
 
@@ -33,15 +30,12 @@ onUnmounted(() => {
   if (fetchInterval.value) {
     clearInterval(fetchInterval.value);
   }
-  if (fetchCameraInterval.value) {
-    clearInterval(fetchCameraInterval.value);
-  }
 });
 
 async function fetchRecognizedText(): Promise<void> {
   try {
     const response = await fetch(
-      "http://192.168.92.136:5001/get_detected_text",
+      "http://192.168.16.126:5001/get_detected_text",
     );
     console.log("Response:", response);
     if (response.ok) {
@@ -56,20 +50,6 @@ async function fetchRecognizedText(): Promise<void> {
     }
   } catch (error) {
     console.error("Error aaaaa:", error);
-  }
-}
-
-async function checkCameraStatus(): Promise<void> {
-  try {
-    const response = await fetch("http://192.168.92.136:5001/video_feed");
-    if (response.ok) {
-      cameraOn.value = true;
-    } else {
-      console.log("Camera is not on");
-    }
-  } catch (error) {
-    console.log("Camera is not on aaaaaa");
-    cameraOn.value = true;
   }
 }
 </script>
