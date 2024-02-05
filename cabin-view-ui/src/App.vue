@@ -6,6 +6,17 @@
 
 <script setup lang="ts">
 import { RouterView } from "vue-router";
+import { ref, onMounted } from "vue";
+import { usePalletStatusStore } from "@/stores/palletStatusStore";
+import type { PalletStatuses } from "@/types/palletStatus";
+
+const palletStatusStore = usePalletStatusStore();
+const palletStatus = ref([] as PalletStatuses[]);
+
+onMounted(async () => {
+  await palletStatusStore.loadData();
+  palletStatus.value = palletStatusStore.palletStatus;
+});
 </script>
 
 <style lang="scss">
@@ -15,10 +26,11 @@ body {
   font-family: "Roboto", sans-serif;
   height: 100%;
   width: 100%;
-  background-color: var(--cyan-100);
 }
 
 #app {
-  display: flex;
+  display: block;
+  padding: 0;
+  overflow: hidden;
 }
 </style>

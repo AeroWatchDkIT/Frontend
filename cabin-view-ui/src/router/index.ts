@@ -5,9 +5,14 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "reboot",
+      name: "main",
       component: () => import("@/views/MainView.vue"),
     },
+    {
+      path: "/tables", 
+      name: "tables", 
+      component: () => import("@/views/TableView.vue"),
+    }
   ],
 });
 
