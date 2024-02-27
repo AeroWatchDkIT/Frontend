@@ -39,21 +39,44 @@ import DynamicDialog from "primevue/dynamicdialog";
 import CameraInfoToast from "./CameraInfoToast.vue";
 import AlertModal from "./AlertModal.vue";
 import { useDialog } from "primevue/usedialog";
-import { ref, watch } from "vue";
+import { ref, watch, toRef } from "vue";
 const props = defineProps({
   cameraFeedUrl: String,
   recognizedText: String,
   recognitionTime: String,
 });
-const dialog = useDialog();
-const pallet = ref("ABC");
-const place = ref("forklift");
 
-watch(place, (newPlace, oldPlace) => {
-  if (oldPlace === "forklift" && newPlace !== pallet.value) {
-    showAlertDialog();
-  }
-});
+const dialog = useDialog();
+const data = toRef(props, "recognizedText");
+const pallet = ref("");
+const place = ref("");
+
+watch(
+  data,
+  (oldPlace, newPlace) => {
+    if (
+      oldPlace?.charAt(0) === "S" &&
+      newPlace?.charAt(0) === "P" &&
+      newPlace !== oldPlace
+    ) {
+      place.value = oldPlace;
+      pallet.value = newPlace;
+      showAlertDialog();
+    }
+
+    if (
+      oldPlace?.charAt(0) === "P" &&
+      newPlace?.charAt(0) === "S" &&
+      newPlace !== oldPlace
+    ) {
+      pallet.value = oldPlace;
+      place.value = newPlace;
+      showAlertDialog();
+    }
+    oldPlace = newPlace;
+  },
+  { immediate: true },
+);
 
 function showAlertDialog(): void {
   dialog.open(AlertModal, {

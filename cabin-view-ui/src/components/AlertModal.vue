@@ -11,7 +11,7 @@
     />
     <AlertIcon class="alert-icon" />
     <h1 class="warning-text">
-      Placing Pallet "{{ pallet }}" on shelf "{{ place }}"
+      Placing pallet '{{ pallet }}' on shelf '{{ place }}'
     </h1>
   </div>
 </template>
