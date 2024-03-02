@@ -1,17 +1,27 @@
 <template>
   <div class="main-container">
     <img :src="props.cameraFeedUrl" alt="Camera Feed" class="camera-feed" />
-    <Button
-      class="table-button"
-      text
-      raised
-      rounded
-      @click="$router.push('/tables')"
-    >
-      <template #icon> <PalletIcon class="pallet-icon" /> </template>
-    </Button>
-    <div class="alertTest">
-      <Button label="Alert" @click="showAlertDialog"></Button>
+    <div class="buttons">
+      <Button
+        class="table-button"
+        text
+        raised
+        rounded
+        @click="$router.push('/tables')"
+      >
+        <template #icon> <PalletIcon class="pallet-icon" /> </template>
+      </Button>
+      <Button
+        class="alert-button"
+        text
+        raised
+        rounded
+        @click="showMissingPalletDialog"
+      >
+        <template #icon>
+          <PlainAlertIcon class="alert-icon" />
+        </template>
+      </Button>
     </div>
     <DynamicDialog
       :pt="{
@@ -35,9 +45,11 @@
 <script setup lang="ts">
 import Button from "primevue/button";
 import PalletIcon from "@/icons/PalletIcon.vue";
+import PlainAlertIcon from "@/icons/PlainAlertIcon.vue";
 import DynamicDialog from "primevue/dynamicdialog";
 import CameraInfoToast from "./CameraInfoToast.vue";
 import AlertModal from "./AlertModal.vue";
+import MissingPalletModal from "./MissingPalletModal.vue";
 import { useDialog } from "primevue/usedialog";
 import { ref, watch, toRef } from "vue";
 const props = defineProps({
@@ -54,10 +66,11 @@ const place = ref("");
 watch(
   data,
   (oldPlace, newPlace) => {
+    newPlace = data.value;
     if (
       oldPlace?.charAt(0) === "S" &&
       newPlace?.charAt(0) === "P" &&
-      newPlace !== oldPlace
+      compareIgnoringFirstTwo(newPlace, oldPlace)
     ) {
       place.value = oldPlace;
       pallet.value = newPlace;
@@ -67,7 +80,7 @@ watch(
     if (
       oldPlace?.charAt(0) === "P" &&
       newPlace?.charAt(0) === "S" &&
-      newPlace !== oldPlace
+      compareIgnoringFirstTwo(newPlace, oldPlace)
     ) {
       pallet.value = oldPlace;
       place.value = newPlace;
@@ -77,6 +90,32 @@ watch(
   },
   { immediate: true },
 );
+
+function compareIgnoringFirstTwo(str1: string, str2: string): boolean {
+  return str1?.substring(2) !== str2?.substring(2);
+}
+
+function showMissingPalletDialog(): void {
+  dialog.open(MissingPalletModal, {
+    props: {
+      style: {
+        width: "30vw",
+        borderRadius: "2rem",
+      },
+      breakpoints: {
+        "960px": "75vw",
+        "640px": "90vw",
+      },
+      modal: true,
+      closable: false,
+      showHeader: false,
+    },
+    data: {
+      pallet: pallet.value,
+      place: place.value,
+    },
+  });
+}
 
 function showAlertDialog(): void {
   dialog.open(AlertModal, {
@@ -111,22 +150,35 @@ function showAlertDialog(): void {
   height: 100%;
 }
 
-.table-button {
+.buttons {
+  display: flex;
+  flex-direction: column;
   position: absolute;
   top: 2%;
   right: 2%;
+}
+
+.table-button {
   width: 5rem;
   height: 5rem;
-  background-color: var(--cyan-100);
-  :hover {
-    background-color: var(--cyan-200);
-  }
+  margin-bottom: 1rem;
+}
+
+.alert-button {
+  width: 5rem;
+  height: 5rem;
 }
 
 .pallet-icon {
   padding-top: 0.5rem;
   width: 5rem;
   height: 5rem;
+  color: white;
+}
+
+.alert-icon {
+  width: 3rem;
+  height: 3rem;
   color: white;
 }
 
