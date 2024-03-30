@@ -24,6 +24,7 @@
       </Button>
     </div>
     <DynamicDialog
+      class="alertTest"
       :pt="{
         content: {
           style: {
@@ -40,6 +41,8 @@
       :recognized-text="props.recognizedText"
     />
   </div>
+  <ConfirmDialog></ConfirmDialog>
+  <Toast position="top-center" />
 </template>
 
 <script setup lang="ts">
@@ -49,8 +52,11 @@ import PlainAlertIcon from "@/icons/PlainAlertIcon.vue";
 import DynamicDialog from "primevue/dynamicdialog";
 import CameraInfoToast from "./CameraInfoToast.vue";
 import AlertModal from "./AlertModal.vue";
-import MissingPalletModal from "./MissingPalletModal.vue";
+import ConfirmDialog from "primevue/confirmdialog";
 import { useDialog } from "primevue/usedialog";
+import { useConfirm } from "primevue/useconfirm";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 import { ref, watch, toRef } from "vue";
 const props = defineProps({
   cameraFeedUrl: String,
@@ -59,6 +65,8 @@ const props = defineProps({
 });
 
 const dialog = useDialog();
+const confirm = useConfirm();
+const toast = useToast();
 const data = toRef(props, "recognizedText");
 const pallet = ref("");
 const place = ref("");
@@ -96,23 +104,28 @@ function compareIgnoringFirstTwo(str1: string, str2: string): boolean {
 }
 
 function showMissingPalletDialog(): void {
-  dialog.open(MissingPalletModal, {
-    props: {
-      style: {
-        width: "30vw",
-        borderRadius: "2rem",
-      },
-      breakpoints: {
-        "960px": "75vw",
-        "640px": "90vw",
-      },
-      modal: true,
-      closable: false,
-      showHeader: false,
+  confirm.require({
+    message: "Alert the other forklift drivers?",
+    header: "Alert Missing Pallet",
+    icon: "pi pi-exclamation-triangle",
+    rejectClass: "p-button-secondary p-button-outlined",
+    rejectLabel: "Cancel",
+    acceptLabel: "Alert",
+    accept: () => {
+      toast.add({
+        severity: "info",
+        summary: "Alert",
+        detail: "Alert sent to other forklift drivers",
+        life: 3000,
+      });
     },
-    data: {
-      pallet: pallet.value,
-      place: place.value,
+    reject: () => {
+      toast.add({
+        severity: "error",
+        summary: "Rejected",
+        detail: "You have rejected",
+        life: 3000,
+      });
     },
   });
 }

@@ -7,6 +7,7 @@ import "primevue/resources/themes/lara-light-cyan/theme.css";
 import 'primeicons/primeicons.css'
 import DialogService from 'primevue/dialogservice';
 import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
 
 import App from "./App.vue";
 import router from "./router";
@@ -18,5 +19,6 @@ app.use(router);
 app.use(PrimeVue);
 app.use(DialogService);
 app.use(ToastService);
+app.use(ConfirmationService);
 
 app.mount("#app");
