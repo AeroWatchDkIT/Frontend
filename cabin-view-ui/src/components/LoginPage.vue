@@ -36,9 +36,10 @@ import FloatLabel from "primevue/floatlabel";
 import Password from "primevue/password";
 import { ref } from "vue";
 import { useUserStore } from "@/stores";
+import { useRouter } from "vue-router";
 
-const { loggedIn, emitUpdate } = defineProps(["loggedIn", "emitUpdate"]);
 const userStore = useUserStore();
+const router = useRouter();
 const username = ref("");
 const password = ref("");
 const requestLogin = ref(false);
@@ -52,7 +53,8 @@ async function login(): Promise<void> {
   );
   console.log(loginString.value);
   if (loginString.value === "user found") {
-    emitUpdate(true);
+    sessionStorage.setItem("loggedIn", "true");
+    router.push("/main");
   }
 }
 </script>

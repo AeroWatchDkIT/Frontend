@@ -45,18 +45,18 @@
           severity="secondary"
           aria-label="Filter"
           size="large"
-          @click="$router.push('/')"
+          @click="$router.push('/main')"
         />
         <div class="header-div">
-          <span class="p-input-icon-left">
-            <i class="pi pi-search" />
+          <IconField icon-position="left">
+            <InputIcon class="pi pi-search"> </InputIcon>
             <InputText
               v-model="searchName"
               placeholder="Search"
               class="searchbar"
               @input="searchPallet()"
             />
-          </span>
+          </IconField>
           <span v-if="selectedState && selectedState.name" class="table-header"
             >{{ selectedState.name }} Pallets</span
           >
@@ -109,6 +109,8 @@ import Column from "primevue/column";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
 import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import { usePalletStatusStore } from "@/stores/palletStatusStore";
 import { FilterMatchMode, FilterOperator } from "primevue/api";
