@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <RouterView />
+    <Toast position="top-center" />
   </div>
 </template>
 
@@ -9,6 +10,7 @@ import { RouterView } from "vue-router";
 import { ref, onMounted } from "vue";
 import { usePalletStatusStore } from "@/stores/palletStatusStore";
 import type { PalletStatuses } from "@/types/palletStatus";
+import Toast from "primevue/toast";
 
 const palletStatusStore = usePalletStatusStore();
 const palletStatus = ref([] as PalletStatuses[]);

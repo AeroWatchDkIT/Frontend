@@ -11,10 +11,19 @@
           <Password v-model="password" toggle-mask class="password-inputtext" />
           <label for="password">New Password</label>
         </FloatLabel>
+
         <Button type="submit" class="submit-button">Update Password</Button>
       </form>
+      <Button
+        type="submit"
+        class="cancel submit-button"
+        severity="danger"
+        @click="cancel"
+        >Cancel</Button
+      >
     </div>
   </div>
+  <Toast position="top-center" />
 </template>
 
 <script setup lang="ts">
@@ -25,9 +34,12 @@ import Password from "primevue/password";
 import { ref } from "vue";
 import { useUserStore } from "@/stores";
 import { useRouter } from "vue-router";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 
 const userStore = useUserStore();
 const router = useRouter();
+const toast = useToast();
 const userId = ref("");
 const password = ref("");
 const loginString = ref("");
@@ -38,8 +50,25 @@ async function forgetPassword(): Promise<void> {
     password.value,
   );
   if (loginString.value === "Password updated") {
+    toast.add({
+      severity: "success",
+      summary: "Password Updated",
+      detail: "Your password has been successfully updated",
+      life: 3000,
+    });
     router.push("/login");
+  } else {
+    toast.add({
+      severity: "error",
+      summary: "Invalid User ID",
+      detail: "Invalid user id or no user found with this id",
+      life: 3000,
+    });
   }
+}
+
+function cancel(): void {
+  router.push("/login");
 }
 </script>
 
@@ -113,5 +142,9 @@ async function forgetPassword(): Promise<void> {
   font-size: small;
   align-self: center;
   margin-left: 0.5rem;
+}
+
+.cancel {
+  margin-top: 1rem;
 }
 </style>

@@ -1,6 +1,17 @@
 <template>
   <div class="main-container">
     <img :src="props.cameraFeedUrl" alt="Camera Feed" class="camera-feed" />
+    <div class="leftside-buttons">
+      <Button
+        class="alert-button"
+        icon="pi pi-sign-out"
+        text
+        raised
+        rounded
+        @click="logout"
+      >
+      </Button>
+    </div>
     <div class="buttons">
       <Button
         class="table-button"
@@ -58,6 +69,8 @@ import { useConfirm } from "primevue/useconfirm";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
 import { ref, watch, toRef } from "vue";
+import { useRouter } from "vue-router";
+
 const props = defineProps({
   cameraFeedUrl: String,
   recognizedText: String,
@@ -67,6 +80,7 @@ const props = defineProps({
 const dialog = useDialog();
 const confirm = useConfirm();
 const toast = useToast();
+const router = useRouter();
 const data = toRef(props, "recognizedText");
 const pallet = ref("");
 const place = ref("");
@@ -151,6 +165,11 @@ function showAlertDialog(): void {
     },
   });
 }
+
+function logout(): void {
+  sessionStorage.setItem("loggedIn", "false");
+  router.push("/login");
+}
 </script>
 
 <style scoped lang="scss">
@@ -161,6 +180,14 @@ function showAlertDialog(): void {
 .camera-feed {
   width: 100%;
   height: 100%;
+}
+
+.leftside-buttons {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 2%;
+  left: 2%;
 }
 
 .buttons {
@@ -180,6 +207,7 @@ function showAlertDialog(): void {
 .alert-button {
   width: 5rem;
   height: 5rem;
+  margin-bottom: 1rem;
 }
 
 .pallet-icon {
@@ -201,5 +229,12 @@ function showAlertDialog(): void {
   left: 0%;
   width: 5rem;
   height: 5rem;
+}
+
+.alert-button {
+  :deep(.pi) {
+    font-size: 2rem;
+    color: black;
+  }
 }
 </style>
