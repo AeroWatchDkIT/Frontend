@@ -15,17 +15,14 @@ export const usePalletStatusStore = defineStore("palletStatus", {
     async loadData():Promise<void> {
       const data = await PalletStatusService.getAllData();
       this.palletStatus = data;
-      console.log("palletStatus", this.palletStatus);
     },
     async searchPallet(searchTerm: string): Promise<void> {
       const data = await PalletStatusService.getDataBySearchTerm(searchTerm);
       this.palletStatus = data;
-      console.log("palletStatus", this.palletStatus)
     },
     async loadDataByPalletState(palletState: string): Promise<void> {
       const data = await PalletStatusService.getDataByPalletState(palletState);
       this.palletStatus = data;
-      console.log("palletStatus", this.palletStatus)
     }
 
   },
