@@ -202,12 +202,14 @@ function logout(): void {
   width: 5rem;
   height: 5rem;
   margin-bottom: 1rem;
+  background-color: white;
 }
 
 .alert-button {
   width: 5rem;
   height: 5rem;
   margin-bottom: 1rem;
+  background-color: white;
 }
 
 .pallet-icon {
