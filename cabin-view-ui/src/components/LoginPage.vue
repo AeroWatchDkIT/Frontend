@@ -106,6 +106,7 @@ const handleFaceRecognition = async () => {
       console.log("Fetched text:", data.access_granted);
       if (data.access_granted == true) {
         sessionStorage.setItem("loggedIn", "true");
+        await stopFaceRecognition();  // Stop the face recognition process
         router.push("/main");
       }
     } else {
@@ -115,6 +116,23 @@ const handleFaceRecognition = async () => {
     console.error("Error aaaaa:", error);
   }
 }
+
+const stopFaceRecognition = async () => {
+  try {
+    await fetch("http://127.0.0.1:5000/stop_face_recognition", {
+      method: "POST",
+    });
+    console.log("Face recognition stopped");
+  } catch (error) {
+    console.error("Error stopping face recognition:", error);
+    toast.add({
+      severity: "error",
+      summary: "Face Recognition Stop Failed",
+      detail: "Error stopping face recognition",
+      life: 3000,
+    });
+  }
+};
 
 async function login(): Promise<void> {
   loginString.value = await userStore.login(

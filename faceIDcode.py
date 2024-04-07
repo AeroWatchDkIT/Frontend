@@ -31,7 +31,7 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fronta
 access_status = {"access_granted": False, "user": ""}
  
 # Load all images from the operatorimages folder and create encodings
-image_folder = "/operatorImages"
+image_folder = "operatorImages"
 known_face_encodings = []
 known_face_names = []
 for filename in os.listdir(image_folder):
@@ -48,52 +48,56 @@ for filename in os.listdir(image_folder):
 def generate_frames():
     global face_recognition_started
     cap = cv2.VideoCapture(0)
-    while True:
-        success, frame = cap.read()
-        if not success:
-            break
- 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-        # Perform face recognition if triggered
-        if face_recognition_started:
-            for (x, y, w, h) in faces:
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                face_frame = frame[y:y + h, x:x + w]
-                face_frame_rgb = cv2.cvtColor(face_frame, cv2.COLOR_BGR2RGB)
-                current_face_encoding = face_recognition.face_encodings(face_frame_rgb)
+    try:
+        while True:
+            success, frame = cap.read()
+            if not success:
+                break
     
-                if current_face_encoding:
-                    matches = face_recognition.compare_faces(known_face_encodings, current_face_encoding[0])
-                    name = "Unknown"
-    
-                    face_distances = face_recognition.face_distance(known_face_encodings, current_face_encoding[0])
-                    best_match_index = np.argmin(face_distances)
-                    if matches[best_match_index]:
-                        name = known_face_names[best_match_index]
-                        print(f"Access Granted for {name}")
-                        cv2.putText(frame, f"{name} - Access Granted", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
-                        
-                        # Update the access status
-                        access_status["access_granted"] = True
-                        access_status["user"] = name
-    
-                        # Send message over PubNub
-                        payload = {'userId': name, 'passCode': 'valid', 'requestFromAdmin': True}
-                        # pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
-                        print(payload)
-                    else:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+            # Perform face recognition if triggered
+            if face_recognition_started:
+                for (x, y, w, h) in faces:
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                    face_frame = frame[y:y + h, x:x + w]
+                    face_frame_rgb = cv2.cvtColor(face_frame, cv2.COLOR_BGR2RGB)
+                    current_face_encoding = face_recognition.face_encodings(face_frame_rgb)
+        
+                    if current_face_encoding:
+                        matches = face_recognition.compare_faces(known_face_encodings, current_face_encoding[0])
                         name = "Unknown"
-                        print("Access Not Granted")
-                        cv2.putText(frame, "Unknown - Access Not Granted", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2, cv2.LINE_AA)
-                        payload = {'userId': 'invalid', 'passCode': 'invalid', 'requestFromAdmin': True}
-                        #pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
-                        print(payload)
- 
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        
+                        face_distances = face_recognition.face_distance(known_face_encodings, current_face_encoding[0])
+                        best_match_index = np.argmin(face_distances)
+                        if matches[best_match_index]:
+                            name = known_face_names[best_match_index]
+                            print(f"Access Granted for {name}")
+                            cv2.putText(frame, f"{name} - Access Granted", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+                            
+                            # Update the access status
+                            access_status["access_granted"] = True
+                            access_status["user"] = name
+        
+                            # Send message over PubNub
+                            payload = {'userId': name, 'passCode': 'valid', 'requestFromAdmin': True}
+                            # pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
+                            print(payload)
+                        else:
+                            name = "Unknown"
+                            print("Access Not Granted")
+                            cv2.putText(frame, "Unknown - Access Not Granted", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2, cv2.LINE_AA)
+                            payload = {'userId': 'invalid', 'passCode': 'invalid', 'requestFromAdmin': True}
+                            #pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
+                            print(payload)
+    
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+    finally:
+        cap.release()
+        print("Camera released")
  
 @app.route('/video_feed')
 def video_feed():
@@ -108,6 +112,14 @@ def trigger_face_recognition():
 @app.route('/get_access_status')
 def get_access_status():
     return jsonify(access_status)
+
+@app.route('/stop_face_recognition', methods=['POST'])
+def stop_face_recognition():
+    global face_recognition_started
+    face_recognition_started = False  # Use this flag to stop the frame generation loop
+    access_status["access_granted"] = False  # Reset access status
+    access_status["user"] = ""  # Clear the recognized user name
+    return "Face recognition stopped"
  
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)
