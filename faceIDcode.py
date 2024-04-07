@@ -1,12 +1,14 @@
 import os
 import cv2
 import face_recognition
+from flask_cors import CORS
 import numpy as np
 from pubnub.pubnub import PubNub
 from pubnub.pnconfiguration import PNConfiguration
-from flask import Flask, Response
+from flask import Flask, Response, jsonify
  
 app = Flask(__name__)
+CORS(app)  # This will enable CORS for all routes and methods
  
 # Initialize PubNub
 # pnconfig = PNConfiguration()
@@ -25,9 +27,11 @@ app = Flask(__name__)
  
 # Initialize the Haar Cascade
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+access_status = {"access_granted": False, "user": ""}
  
 # Load all images from the operatorimages folder and create encodings
-image_folder = "operatorImages"
+image_folder = "/operatorImages"
 known_face_encodings = []
 known_face_names = []
 for filename in os.listdir(image_folder):
@@ -69,6 +73,10 @@ def generate_frames():
                         name = known_face_names[best_match_index]
                         print(f"Access Granted for {name}")
                         cv2.putText(frame, f"{name} - Access Granted", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
+                        
+                        # Update the access status
+                        access_status["access_granted"] = True
+                        access_status["user"] = name
     
                         # Send message over PubNub
                         payload = {'userId': name, 'passCode': 'valid', 'requestFromAdmin': True}
@@ -96,6 +104,10 @@ def trigger_face_recognition():
     global face_recognition_started
     face_recognition_started = True
     return "Face recognition started"
+
+@app.route('/get_access_status')
+def get_access_status():
+    return jsonify(access_status)
  
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)
