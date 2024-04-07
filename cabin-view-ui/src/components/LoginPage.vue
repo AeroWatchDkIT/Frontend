@@ -47,7 +47,7 @@ import Password from "primevue/password";
 import Checkbox from "primevue/checkbox";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useUserStore } from "@/stores";
 import { useRouter } from "vue-router";
 
@@ -61,26 +61,79 @@ const requestLogin = ref(false);
 const loginString = ref("");
 const faceRecognvideoFeedUrl = ref('http://127.0.0.1:5000/video_feed');
 const isProcessing = ref(false);
+const fetchInterval = ref<NodeJS.Timeout | null>(null);
+const recognizedUser = ref("");
+
+onMounted(async () => {
+    await fetchRecognizedText();
+    fetchInterval.value = setInterval(fetchRecognizedText, 5000);
+  });
+  
+onUnmounted(() => {
+    if (fetchInterval.value) {
+      clearInterval(fetchInterval.value);
+    }
+});
 
 const handleFaceRecognition = async () => {
-  if (isProcessing.value) return;
-  isProcessing.value = true;
-
+    if (isProcessing.value) return;
+    isProcessing.value = true;
+  
+    try {
+      await fetch("http://127.0.0.1:5000/trigger_face_recognition", {
+        method: "POST",
+      });
+      console.log("Face recognition triggered");
+      isProcessing.value = false;
+    } catch (error) {
+      console.error("Error triggering face recognition:", error);
+      toast.add({
+        severity: "error",
+        summary: "Face Recognition Trigger Failed",
+        detail: "Error triggering face recognition",
+        life: 3000,
+      });
+    }
+  };
+  
+  async function fetchRecognizedText(): Promise<void> {
   try {
-    await fetch('http://127.0.0.1:5000/trigger_face_recognition', { method: 'POST' });
-    console.log('Face recognition triggered');
-    isProcessing.value = false;
+    const response = await fetch("http://127.0.0.1:5000/get_access_status");
+    console.log("Response:", response);
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      console.log("Fetched text:", data.access_granted);
+      if (data.access_granted == true) {
+        sessionStorage.setItem("loggedIn", "true");
+        router.push("/main");
+      }
+    } else {
+      console.error("Error fetching recognized text bbbbb");
+    }
   } catch (error) {
-    console.error('Error triggering face recognition:', error);
+    console.error("Error aaaaa:", error);
+  }
+}
+
+async function login(): Promise<void> {
+  loginString.value = await userStore.login(
+    userId.value,
+    password.value,
+    requestLogin.value,
+  );
+  if (loginString.value === "user found") {
+    sessionStorage.setItem("loggedIn", "true");
+    router.push("/main");
+  } else {
     toast.add({
-      severity: 'error',
-      summary: 'Face Recognition Trigger Failed',
-      detail: 'Error triggering face recognition',
+      severity: "error",
+      summary: "Login Failed",
+      detail: "Invalid user id and password combination",
       life: 3000,
     });
   }
-};
-
+}
 </script>
 
 
