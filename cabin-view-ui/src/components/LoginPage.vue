@@ -28,14 +28,12 @@
           >Forgot your password?</Button
         >
         <p class="or"><span>Or</span></p>
-        <Button class="submit-button face" :disabled="isProcessing" @click="handleFaceRecognition" >Face Recognition</Button>
+        <Button class="submit-button face"  @click="handleFaceRecognition" >Face Recognition</Button>
       </form>
     </div>
     <div class="face-recognition">
       <p>Initializing Face Recognition...</p>
       <img :src="faceRecognvideoFeedUrl" alt="Face Recognition Feed">
-      <Button @click="refreshFeed">Refresh Feed</Button>
-      <Button @click="handleStopRecognition">Stop Face Recognition</Button>
     </div>
   </div>
   <Toast position="top-center" />
@@ -61,94 +59,23 @@ const userId = ref("");
 const password = ref("");
 const requestLogin = ref(false);
 const loginString = ref("");
-const faceRecognvideoFeedUrl = ref('http://192.168.1.20:5001/face_recognition_feed');
+const faceRecognvideoFeedUrl = ref('http://127.0.0.1:5000/video_feed');
 const isProcessing = ref(false);
-
-
-const checkAccessInterval = ref<number | undefined>(undefined);
-
-const refreshFeed = () => {
-  faceRecognvideoFeedUrl.value += '?'; // Appending a query string to force refresh
-};
-async function login(): Promise<void> {
-  loginString.value = await userStore.login(
-    userId.value,
-    password.value,
-    requestLogin.value,
-  );
-  if (loginString.value === "user found") {
-    sessionStorage.setItem("loggedIn", "true");
-    router.push("/main");
-  } else {
-    toast.add({
-      severity: "error",
-      summary: "Login Failed",
-      detail: "Invalid user id and password combination",
-      life: 3000,
-    });
-  }
-}
 
 const handleFaceRecognition = async () => {
   if (isProcessing.value) return;
   isProcessing.value = true;
 
   try {
-    const response = await fetch('http://192.168.1.20:5001/trigger_face_recognition_feed');
-    if (!response.ok) throw new Error('Face recognition failed');
-    console.log('Face recognition initiated');
-
-    faceRecognvideoFeedUrl.value = `http://192.168.1.20:5001/face_recognition_feed?${new Date().getTime()}`;
-
-    checkAccessInterval.value = window.setInterval(async () => {
-      const accessResponse = await fetch('http://192.168.1.20:5001/check_access');
-      const data = await accessResponse.json();
-      if (data.access_granted) {
-        clearInterval(checkAccessInterval.value!); // Use non-null assertion
-        startOcrProcess();
-      }
-    }, 1000);
-  } catch (error) {
-    console.error('Error initiating face recognition:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Face Recognition Failed',
-      detail: 'Error initiating face recognition',
-      life: 3000,
-    });
-  } finally {
+    await fetch('http://127.0.0.1:5000/trigger_face_recognition', { method: 'POST' });
+    console.log('Face recognition triggered');
     isProcessing.value = false;
-  }
-};
-
-function startOcrProcess() {
-  fetch('http://192.168.1.20:5001/start_ocr')
-    .then((response) => {
-      if (response.ok) {
-        console.log('OCR process started.');
-        router.push('/main');
-      } else {
-        console.error('Failed to start OCR process.');
-      }
-    })
-    .catch((error) => console.error('Error starting OCR process:', error));
-}
-
-
-
-const handleStopRecognition = async () => {
-  try {
-    const response = await fetch('http://192.168.1.20:5001/stop_face_recognition');
-    if (!response.ok) {
-      throw new Error('Failed to stop face recognition');
-    }
-    console.log('Face recognition stopping');
   } catch (error) {
-    console.error('Error stopping face recognition:', error);
+    console.error('Error triggering face recognition:', error);
     toast.add({
       severity: 'error',
-      summary: 'Stop Face Recognition Failed',
-      detail: 'Error stopping face recognition',
+      summary: 'Face Recognition Trigger Failed',
+      detail: 'Error triggering face recognition',
       life: 3000,
     });
   }
