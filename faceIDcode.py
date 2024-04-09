@@ -10,28 +10,14 @@ from flask import Flask, Response, jsonify
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes and methods
  
-# Initialize PubNub
-# pnconfig = PNConfiguration()
-# pnconfig.publish_key = 'pub-c-9eb20452-d655-4bf0-91b9-8eecde9199e3'
-# pnconfig.subscribe_key = 'sub-c-878f6650-7fba-4b01-bd5c-061c161b0e9a'
-# pnconfig.ssl = True
-# pnconfig.uuid = 'unique_identifier_for_this_client'
-# pubnub = PubNub(pnconfig)
- 
-# Callback function for publish response
-# def publish_callback(result, status):
-#     if not status.is_error():
-#         print(f"Message published successfully: {result}")
-#     else:
-#         print(f"Failed to publish message: {status}")
- 
 # Initialize the Haar Cascade
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 access_status = {"access_granted": False, "user": ""}
  
 # Load all images from the operatorimages folder and create encodings
-image_folder = "operatorImages"
+#image_folder = "operatorImages"
+image_folder = os.path.join(os.path.dirname(__file__), "operatorImages")
 known_face_encodings = []
 known_face_names = []
 for filename in os.listdir(image_folder):
@@ -83,6 +69,8 @@ def generate_frames():
                             payload = {'userId': name, 'passCode': 'valid', 'requestFromAdmin': True}
                             # pubnub.publish().channel('face_recognition_channel').message(payload).pn_async(publish_callback)
                             print(payload)
+                            #cap.release()
+                            print("Camera released")
                         else:
                             name = "Unknown"
                             print("Access Not Granted")
@@ -96,7 +84,7 @@ def generate_frames():
             yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
     finally:
-        cap.release()
+        #cap.release()
         print("Camera released")
  
 @app.route('/video_feed')
@@ -123,3 +111,18 @@ def stop_face_recognition():
  
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)
+
+    # Initialize PubNub
+# pnconfig = PNConfiguration()
+# pnconfig.publish_key = 'pub-c-9eb20452-d655-4bf0-91b9-8eecde9199e3'
+# pnconfig.subscribe_key = 'sub-c-878f6650-7fba-4b01-bd5c-061c161b0e9a'
+# pnconfig.ssl = True
+# pnconfig.uuid = 'unique_identifier_for_this_client'
+# pubnub = PubNub(pnconfig)
+ 
+# Callback function for publish response
+# def publish_callback(result, status):
+#     if not status.is_error():
+#         print(f"Message published successfully: {result}")
+#     else:
+#         print(f"Failed to publish message: {status}")
