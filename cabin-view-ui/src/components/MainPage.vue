@@ -88,7 +88,6 @@ const place = ref("");
 watch(
   data,
   (oldPlace, newPlace) => {
-    newPlace = data.value;
     if (
       oldPlace?.charAt(0) === "S" &&
       newPlace?.charAt(0) === "P" &&
@@ -108,7 +107,6 @@ watch(
       place.value = newPlace;
       showAlertDialog();
     }
-    oldPlace = newPlace;
   },
   { immediate: true },
 );
