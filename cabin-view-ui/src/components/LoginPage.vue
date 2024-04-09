@@ -50,6 +50,7 @@ import { useToast } from "primevue/usetoast";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useUserStore } from "@/stores";
 import { useRouter } from "vue-router";
+import { time } from "console";
 
 
 const userStore = useUserStore();
@@ -60,6 +61,9 @@ const password = ref("");
 const requestLogin = ref(false);
 const loginString = ref("");
 const faceRecognvideoFeedUrl = ref('http://127.0.0.1:5000/video_feed');
+//const faceRecognvideoFeedUrl = ref('http://192.168.167.168:5000/video_feed');
+
+
 const isProcessing = ref(false);
 const fetchInterval = ref<NodeJS.Timeout | null>(null);
 const recognizedUser = ref("");
@@ -81,6 +85,7 @@ const handleFaceRecognition = async () => {
   
     try {
       await fetch("http://127.0.0.1:5000/trigger_face_recognition", {
+      //await fetch("http://192.168.167.168:5000/trigger_face_recognition", {
         method: "POST",
       });
       console.log("Face recognition triggered");
@@ -99,6 +104,8 @@ const handleFaceRecognition = async () => {
   async function fetchRecognizedText(): Promise<void> {
   try {
     const response = await fetch("http://127.0.0.1:5000/get_access_status");
+    //const response = await fetch("http://192.168.167.168:5000/get_access_status");
+    
     console.log("Response:", response);
     if (response.ok) {
       const data = await response.json();
@@ -107,7 +114,24 @@ const handleFaceRecognition = async () => {
       if (data.access_granted == true) {
         sessionStorage.setItem("loggedIn", "true");
         await stopFaceRecognition();  // Stop the face recognition process
-        router.push("/main");
+        toast.add({
+          severity: "success",
+          summary: "Access Granted",
+          detail: "You have been granted access",
+          life: 4000,
+        });
+        setTimeout(() => {
+          
+          router.push("/main");
+        }, 3000);
+      } else if (data.access_granted == false) {
+        // toast.add({
+        //   severity: "error",
+        //   summary: "Access Denied",
+        //   detail: "You have been denied access",
+        //   life: 4000,
+        // }); 
+        
       }
     } else {
       console.error("Error fetching recognized text bbbbb");
