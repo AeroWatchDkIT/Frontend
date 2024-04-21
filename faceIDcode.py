@@ -6,6 +6,7 @@ import numpy as np
 from pubnub.pubnub import PubNub
 from pubnub.pnconfiguration import PNConfiguration
 from flask import Flask, Response, jsonify
+import requests
  
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes and methods
@@ -15,21 +16,52 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fronta
 
 access_status = {"access_granted": False, "user": ""}
  
-# Load all images from the operatorimages folder and create encodings
-#image_folder = "operatorImages"
-image_folder = os.path.join(os.path.dirname(__file__), "operatorImages")
+# Azure URL Endpoint
+base_url = "https://palletsyncapi.azurewebsites.net/users/GetImage?userId="
+# List of user IDs to fetch images
+user_ids = ["U-4741"]  # Example list of user IDs
 known_face_encodings = []
 known_face_names = []
-for filename in os.listdir(image_folder):
-    if filename.endswith(".jpg") or filename.endswith(".png"):
-        image_path = os.path.join(image_folder, filename)
-        image = face_recognition.load_image_file(image_path)
+
+# Fetch and process images from the REST API endpoint
+for user_id in user_ids:
+    url = base_url + user_id
+    print(f"Fetching image for user ID {user_id} from URL: {url}")
+    response = requests.get(url)
+
+    if response.status_code == 200:
+
+        print(f"Image successfully fetched for user ID {user_id}")
+        image_data = response.content  # Get the binary image data
+        np_array = np.frombuffer(image_data, dtype=np.uint8)  # Convert to numpy array
+        image = cv2.imdecode(np_array, cv2.IMREAD_COLOR)  # Convert to OpenCV image
+
+        # Get face encodings
         image_encodings = face_recognition.face_encodings(image)
         if image_encodings:
             face_encoding = image_encodings[0]
-            person_name = os.path.splitext(os.path.basename(filename))[0]
             known_face_encodings.append(face_encoding)
-            known_face_names.append(person_name)
+            known_face_names.append(user_id)  # Use user ID as the name
+    else:
+        print(f"Failed to fetch image for user ID {user_id}. HTTP status: {response.status_code}")
+
+# Load all images localy from the operatorimages folder and create encodings
+#image_folder = "operatorImages"
+# image_folder = os.path.join(os.path.dirname(__file__), "operatorImages")
+# known_face_encodings = []
+# known_face_names = []
+
+# loop through the user IDs and fetch images
+# for filename in os.listdir(image_folder):
+#     if filename.endswith(".jpg") or filename.endswith(".png"):
+#         image_path = os.path.join(image_folder, filename)
+#         image = face_recognition.load_image_file(image_path)
+#         image_encodings = face_recognition.face_encodings(image)
+#         if image_encodings:
+#             face_encoding = image_encodings[0]
+#             person_name = os.path.splitext(os.path.basename(filename))[0]
+#             known_face_encodings.append(face_encoding)
+#             known_face_names.append(person_name)
  
 def generate_frames():
     global face_recognition_started
