@@ -52,8 +52,6 @@
       :recognized-text="props.recognizedText"
     />
   </div>
-  <ConfirmDialog></ConfirmDialog>
-  <Toast position="top-center" />
 </template>
 
 <script setup lang="ts">
@@ -62,12 +60,9 @@ import PalletIcon from "@/icons/PalletIcon.vue";
 import PlainAlertIcon from "@/icons/PlainAlertIcon.vue";
 import DynamicDialog from "primevue/dynamicdialog";
 import CameraInfoToast from "./CameraInfoToast.vue";
+import MissingPallet from "./MissingPallet.vue";
 import AlertModal from "./AlertModal.vue";
-import ConfirmDialog from "primevue/confirmdialog";
 import { useDialog } from "primevue/usedialog";
-import { useConfirm } from "primevue/useconfirm";
-import Toast from "primevue/toast";
-import { useToast } from "primevue/usetoast";
 import { ref, watch, toRef } from "vue";
 import { useRouter } from "vue-router";
 
@@ -78,8 +73,6 @@ const props = defineProps({
 });
 
 const dialog = useDialog();
-const confirm = useConfirm();
-const toast = useToast();
 const router = useRouter();
 const data = toRef(props, "recognizedText");
 const pallet = ref("");
@@ -117,33 +110,6 @@ function compareIgnoringFirstTwo(str1: string, str2: string): boolean {
   return str1?.substring(2) !== str2?.substring(2);
 }
 
-function showMissingPalletDialog(): void {
-  confirm.require({
-    message: "Alert the other forklift drivers?",
-    header: "Alert Missing Pallet",
-    icon: "pi pi-exclamation-triangle",
-    rejectClass: "p-button-secondary p-button-outlined",
-    rejectLabel: "Cancel",
-    acceptLabel: "Alert",
-    accept: () => {
-      toast.add({
-        severity: "info",
-        summary: "Alert",
-        detail: "Alert sent to other forklift drivers",
-        life: 3000,
-      });
-    },
-    reject: () => {
-      toast.add({
-        severity: "error",
-        summary: "Rejected",
-        detail: "You have rejected",
-        life: 3000,
-      });
-    },
-  });
-}
-
 function showAlertDialog(): void {
   dialog.open(AlertModal, {
     props: {
@@ -162,6 +128,24 @@ function showAlertDialog(): void {
     data: {
       pallet: pallet.value,
       place: place.value,
+    },
+  });
+}
+
+function showMissingPalletDialog(): void {
+  dialog.open(MissingPallet, {
+    props: {
+      style: {
+        width: "30vw",
+        borderRadius: "2rem",
+      },
+      breakpoints: {
+        "960px": "75vw",
+        "640px": "90vw",
+      },
+      modal: true,
+      closable: false,
+      header: "Alert Missing Pallet",
     },
   });
 }
