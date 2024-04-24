@@ -1,4 +1,12 @@
 <template>
+  <div class="logo-container">
+    <!-- Company logo at the top, centered -->
+    <img
+      src="@/assets/Palletsynclogo.png"
+      alt="PalletSync Logo"
+      class="company-logo"
+    />
+  </div>
   <div class="login-container">
     <div class="login-form">
       <h1 class="name">Login</h1>
@@ -28,12 +36,14 @@
           >Forgot your password?</Button
         >
         <p class="or"><span>Or</span></p>
-        <Button class="submit-button face"  @click="handleFaceRecognition" >Face Recognition</Button>
+        <Button class="submit-button face" @click="handleFaceRecognition"
+          >Face Recognition</Button
+        >
       </form>
     </div>
     <div class="face-recognition">
       <p>Initializing Face Recognition...</p>
-      <img :src="faceRecognvideoFeedUrl" alt="Face Recognition Feed">
+      <img :src="faceRecognvideoFeedUrl" alt="Face Recognition Feed" />
     </div>
   </div>
   <Toast position="top-center" />
@@ -52,7 +62,6 @@ import { useUserStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { time } from "console";
 
-
 const userStore = useUserStore();
 const router = useRouter();
 const toast = useToast();
@@ -60,52 +69,52 @@ const userId = ref("");
 const password = ref("");
 const requestLogin = ref(false);
 const loginString = ref("");
-const faceRecognvideoFeedUrl = ref('http://127.0.0.1:5000/video_feed');
+const faceRecognvideoFeedUrl = ref("http://127.0.0.1:5000/video_feed");
 //const faceRecognvideoFeedUrl = ref('http://192.168.167.168:5000/video_feed');
-
 
 const isProcessing = ref(false);
 const fetchInterval = ref<NodeJS.Timeout | null>(null);
 const recognizedUser = ref("");
 
 onMounted(async () => {
-    await fetchRecognizedText();
-    fetchInterval.value = setInterval(fetchRecognizedText, 5000);
-  });
-  
+  await fetchRecognizedText();
+  fetchInterval.value = setInterval(fetchRecognizedText, 5000);
+  sessionStorage.setItem("loggedIn", "true");
+});
+
 onUnmounted(() => {
-    if (fetchInterval.value) {
-      clearInterval(fetchInterval.value);
-    }
+  if (fetchInterval.value) {
+    clearInterval(fetchInterval.value);
+  }
 });
 
 const handleFaceRecognition = async () => {
-    if (isProcessing.value) return;
-    isProcessing.value = true;
-  
-    try {
-      await fetch("http://127.0.0.1:5000/trigger_face_recognition", {
+  if (isProcessing.value) return;
+  isProcessing.value = true;
+
+  try {
+    await fetch("http://127.0.0.1:5000/trigger_face_recognition", {
       //await fetch("http://192.168.167.168:5000/trigger_face_recognition", {
-        method: "POST",
-      });
-      console.log("Face recognition triggered");
-      isProcessing.value = false;
-    } catch (error) {
-      console.error("Error triggering face recognition:", error);
-      toast.add({
-        severity: "error",
-        summary: "Face Recognition Trigger Failed",
-        detail: "Error triggering face recognition",
-        life: 3000,
-      });
-    }
-  };
-  
-  async function fetchRecognizedText(): Promise<void> {
+      method: "POST",
+    });
+    console.log("Face recognition triggered");
+    isProcessing.value = false;
+  } catch (error) {
+    console.error("Error triggering face recognition:", error);
+    toast.add({
+      severity: "error",
+      summary: "Face Recognition Trigger Failed",
+      detail: "Error triggering face recognition",
+      life: 3000,
+    });
+  }
+};
+
+async function fetchRecognizedText(): Promise<void> {
   try {
     const response = await fetch("http://127.0.0.1:5000/get_access_status");
     //const response = await fetch("http://192.168.167.168:5000/get_access_status");
-    
+
     console.log("Response:", response);
     if (response.ok) {
       const data = await response.json();
@@ -113,7 +122,7 @@ const handleFaceRecognition = async () => {
       console.log("Fetched text:", data.access_granted);
       if (data.access_granted == true) {
         sessionStorage.setItem("loggedIn", "true");
-        await stopFaceRecognition();  // Stop the face recognition process
+        await stopFaceRecognition(); // Stop the face recognition process
         toast.add({
           severity: "success",
           summary: "Access Granted",
@@ -121,7 +130,6 @@ const handleFaceRecognition = async () => {
           life: 4000,
         });
         setTimeout(() => {
-          
           router.push("/main");
         }, 3000);
       } else if (data.access_granted == false) {
@@ -130,8 +138,7 @@ const handleFaceRecognition = async () => {
         //   summary: "Access Denied",
         //   detail: "You have been denied access",
         //   life: 4000,
-        // }); 
-        
+        // });
       }
     } else {
       console.error("Error fetching recognized text bbbbb");
@@ -178,8 +185,21 @@ async function login(): Promise<void> {
 }
 </script>
 
-
 <style scoped lang="scss">
+.logo-container {
+  display: flex;
+  justify-content: center; // Center the logo horizontally
+  background-color: var(
+    --cyan-100
+  ); // Match background color with login-container
+}
+
+.company-logo {
+  max-width: 50%; // Adjusts the size of the logo
+  height: auto; // Maintains aspect ratio
+  border-radius: 0.5rem; // Rounded corners for the image
+  overflow: hidden; // Ensures any overflow is clipped
+}
 .login-container {
   display: flex;
   flex-direction: row; // Changed from column to row
@@ -187,6 +207,7 @@ async function login(): Promise<void> {
   justify-content: center;
   height: 100vh;
   background-color: var(--cyan-100);
+  margin-top: -200px;
 }
 .login-form {
   background-color: #fff;
@@ -206,17 +227,17 @@ async function login(): Promise<void> {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 400px; 
+  width: 400px;
   min-height: 40vh;
   height: auto;
   max-width: 100%;
 }
 
 .face-recognition img {
-  max-width: 100%;  
-  max-height: 100%;  
-  height: auto;  
-  object-fit: contain;  
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  object-fit: contain;
 }
 .name {
   text-align: center;
