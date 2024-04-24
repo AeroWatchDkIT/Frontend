@@ -28,8 +28,12 @@
           >Forgot your password?</Button
         >
         <p class="or"><span>Or</span></p>
-        <Button class="submit-button face">Face Recognition</Button>
+        <Button class="submit-button face"  @click="handleFaceRecognition" >Face Recognition</Button>
       </form>
+    </div>
+    <div class="face-recognition">
+      <p>Initializing Face Recognition...</p>
+      <img :src="faceRecognvideoFeedUrl" alt="Face Recognition Feed">
     </div>
   </div>
   <Toast position="top-center" />
@@ -43,9 +47,11 @@ import Password from "primevue/password";
 import Checkbox from "primevue/checkbox";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useUserStore } from "@/stores";
 import { useRouter } from "vue-router";
+import { time } from "console";
+
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -54,6 +60,103 @@ const userId = ref("");
 const password = ref("");
 const requestLogin = ref(false);
 const loginString = ref("");
+const faceRecognvideoFeedUrl = ref('http://127.0.0.1:5000/video_feed');
+//const faceRecognvideoFeedUrl = ref('http://192.168.167.168:5000/video_feed');
+
+
+const isProcessing = ref(false);
+const fetchInterval = ref<NodeJS.Timeout | null>(null);
+const recognizedUser = ref("");
+
+onMounted(async () => {
+    await fetchRecognizedText();
+    fetchInterval.value = setInterval(fetchRecognizedText, 5000);
+  });
+  
+onUnmounted(() => {
+    if (fetchInterval.value) {
+      clearInterval(fetchInterval.value);
+    }
+});
+
+const handleFaceRecognition = async () => {
+    if (isProcessing.value) return;
+    isProcessing.value = true;
+  
+    try {
+      await fetch("http://127.0.0.1:5000/trigger_face_recognition", {
+      //await fetch("http://192.168.167.168:5000/trigger_face_recognition", {
+        method: "POST",
+      });
+      console.log("Face recognition triggered");
+      isProcessing.value = false;
+    } catch (error) {
+      console.error("Error triggering face recognition:", error);
+      toast.add({
+        severity: "error",
+        summary: "Face Recognition Trigger Failed",
+        detail: "Error triggering face recognition",
+        life: 3000,
+      });
+    }
+  };
+  
+  async function fetchRecognizedText(): Promise<void> {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/get_access_status");
+    //const response = await fetch("http://192.168.167.168:5000/get_access_status");
+    
+    console.log("Response:", response);
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      console.log("Fetched text:", data.access_granted);
+      if (data.access_granted == true) {
+        sessionStorage.setItem("loggedIn", "true");
+        await stopFaceRecognition();  // Stop the face recognition process
+        toast.add({
+          severity: "success",
+          summary: "Access Granted",
+          detail: "You have been granted access",
+          life: 4000,
+        });
+        setTimeout(() => {
+          
+          router.push("/main");
+        }, 3000);
+      } else if (data.access_granted == false) {
+        // toast.add({
+        //   severity: "error",
+        //   summary: "Access Denied",
+        //   detail: "You have been denied access",
+        //   life: 4000,
+        // }); 
+        
+      }
+    } else {
+      console.error("Error fetching recognized text bbbbb");
+    }
+  } catch (error) {
+    console.error("Error aaaaa:", error);
+  }
+}
+
+const stopFaceRecognition = async () => {
+  try {
+    await fetch("http://127.0.0.1:5000/stop_face_recognition", {
+      method: "POST",
+    });
+    console.log("Face recognition stopped");
+  } catch (error) {
+    console.error("Error stopping face recognition:", error);
+    toast.add({
+      severity: "error",
+      summary: "Face Recognition Stop Failed",
+      detail: "Error stopping face recognition",
+      life: 3000,
+    });
+  }
+};
 
 async function login(): Promise<void> {
   loginString.value = await userStore.login(
@@ -75,10 +178,11 @@ async function login(): Promise<void> {
 }
 </script>
 
+
 <style scoped lang="scss">
 .login-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; // Changed from column to row
   align-items: center;
   justify-content: center;
   height: 100vh;
@@ -90,6 +194,29 @@ async function login(): Promise<void> {
   padding-top: 0.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px; // Adjust as needed to avoid stretching
+}
+
+.face-recognition {
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-left: 2rem; // Add some space between the form and the face recognition div
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px; 
+  min-height: 40vh;
+  height: auto;
+  max-width: 100%;
+}
+
+.face-recognition img {
+  max-width: 100%;  
+  max-height: 100%;  
+  height: auto;  
+  object-fit: contain;  
 }
 .name {
   text-align: center;
