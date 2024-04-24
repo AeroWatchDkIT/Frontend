@@ -77,6 +77,7 @@ const router = useRouter();
 const data = toRef(props, "recognizedText");
 const pallet = ref("");
 const place = ref("");
+const isDialogOpen = ref(false);
 
 watch(
   data,
@@ -111,43 +112,47 @@ function compareIgnoringFirstTwo(str1: string, str2: string): boolean {
 }
 
 function showAlertDialog(): void {
-  dialog.open(AlertModal, {
-    props: {
-      style: {
-        width: "30vw",
-        borderRadius: "2rem",
+  if (!isDialogOpen.value) {
+    dialog.open(AlertModal, {
+      props: {
+        style: {
+          width: "30vw",
+          borderRadius: "2rem",
+        },
+        breakpoints: {
+          "960px": "75vw",
+          "640px": "90vw",
+        },
+        modal: true,
+        closable: false,
+        showHeader: false,
       },
-      breakpoints: {
-        "960px": "75vw",
-        "640px": "90vw",
+      data: {
+        pallet: pallet.value,
+        place: place.value,
       },
-      modal: true,
-      closable: false,
-      showHeader: false,
-    },
-    data: {
-      pallet: pallet.value,
-      place: place.value,
-    },
-  });
+    });
+  }
 }
 
 function showMissingPalletDialog(): void {
-  dialog.open(MissingPallet, {
-    props: {
-      style: {
-        width: "30vw",
-        borderRadius: "2rem",
+  if (!isDialogOpen.value) {
+    dialog.open(MissingPallet, {
+      props: {
+        style: {
+          width: "30vw",
+          borderRadius: "2rem",
+        },
+        breakpoints: {
+          "960px": "75vw",
+          "640px": "90vw",
+        },
+        modal: true,
+        closable: false,
+        header: "Alert Missing Pallet",
       },
-      breakpoints: {
-        "960px": "75vw",
-        "640px": "90vw",
-      },
-      modal: true,
-      closable: false,
-      header: "Alert Missing Pallet",
-    },
-  });
+    });
+  }
 }
 
 function logout(): void {
