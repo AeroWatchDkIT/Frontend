@@ -1,49 +1,54 @@
 <template>
-  <div class="logo-container">
-    <!-- Company logo at the top, centered -->
-    <img
-      src="@/assets/Palletsynclogo.png"
-      alt="PalletSync Logo"
-      class="company-logo"
-    />
-  </div>
   <div class="login-container">
-    <div class="login-form">
-      <h1 class="name">Login</h1>
-      <form @submit.prevent="login">
-        <FloatLabel class="userId">
-          <InputText id="userId" v-model="userId" class="userId-inputtext" />
-          <label for="userId">UserID</label>
-        </FloatLabel>
-        <FloatLabel class="password">
-          <Password
-            v-model="password"
-            toggle-mask
-            :feedback="false"
-            class="password-inputtext"
-          />
-          <label for="password">Password</label>
-        </FloatLabel>
-        <div class="checkbox">
-          <Checkbox v-model="requestLogin" :binary="true" />
-          <label for="checkbox" class="checkbox-label"> Administrator </label>
-        </div>
-        <Button type="submit" class="submit-button">Sign In</Button>
-        <Button
-          text
-          class="forget-button"
-          @click="$router.push('/forget-password')"
-          >Forgot your password?</Button
-        >
-        <p class="or"><span>Or</span></p>
-        <Button class="submit-button face" @click="handleFaceRecognition"
-          >Face Recognition</Button
-        >
-      </form>
+    <div class="logo-container">
+      <!-- Company logo at the top, centered -->
+      <img
+        src="@/assets/Palletsynclogo.png"
+        alt="PalletSync Logo"
+        class="company-logo"
+      />
     </div>
-    <div class="face-recognition">
-      <p>Initializing Face Recognition...</p>
-      <img :src="faceRecognvideoFeedUrl" alt="Face Recognition Feed" />
+    <div class="login-content">
+      <div class="login-form">
+        <form @submit.prevent="login">
+          <FloatLabel class="userId">
+            <InputText id="userId" v-model="userId" class="userId-inputtext" />
+            <label for="userId">UserID</label>
+          </FloatLabel>
+          <FloatLabel class="password">
+            <Password
+              v-model="password"
+              toggle-mask
+              :feedback="false"
+              class="password-inputtext"
+            />
+            <label for="password">Password</label>
+          </FloatLabel>
+          <div class="checkbox">
+            <Checkbox v-model="requestLogin" :binary="true" />
+            <label for="checkbox" class="checkbox-label"> Administrator </label>
+          </div>
+          <Button type="submit" class="submit-button">Sign In</Button>
+          <Button
+            text
+            class="forget-button"
+            @click="$router.push('/forget-password')"
+            >Forgot your password?</Button
+          >
+        </form>
+      </div>
+      <div class="face-recognition">
+        <div class="face-recognition-content">
+          <img
+            :src="faceRecognvideoFeedUrl"
+            alt="Face Recognition Feed"
+            class="face-recognition-feed"
+          />
+          <Button class="submit-button face" @click="handleFaceRecognition"
+            >Face Recognition</Button
+          >
+        </div>
+      </div>
     </div>
   </div>
   <Toast position="top-center" />
@@ -189,48 +194,59 @@ async function login(): Promise<void> {
 .logo-container {
   display: flex;
   justify-content: center; // Center the logo horizontally
-  background-color: var(
-    --cyan-100
-  ); // Match background color with login-container
+  width: 800px; // Adjust to match the width of the two divs
 }
 
 .company-logo {
-  max-width: 50%; // Adjusts the size of the logo
+  max-width: 100%; // Adjusts the size of the logo
   height: auto; // Maintains aspect ratio
-  border-radius: 0.5rem; // Rounded corners for the image
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
   overflow: hidden; // Ensures any overflow is clipped
 }
+
 .login-container {
   display: flex;
-  flex-direction: row; // Changed from column to row
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
   background-color: var(--cyan-100);
-  margin-top: -200px;
 }
+
+.login-content {
+  display: flex;
+  flex-direction: row;
+}
+
 .login-form {
   background-color: #fff;
   padding: 2rem;
   padding-top: 0.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 400px; // Adjust as needed to avoid stretching
-}
-
-.face-recognition {
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 0.5rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-left: 2rem; // Add some space between the form and the face recognition div
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 400px;
+  border-bottom-left-radius: 0.5rem;
+  width: 400px; // Adjust as needed to avoid stretching
   min-height: 40vh;
   height: auto;
   max-width: 100%;
+}
+.face-recognition {
+  background-color: #fff;
+  padding: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 4rem;
+  border-bottom-right-radius: 0.5rem;
+  border-left: 1px solid #d3d3d3;
+  width: 400px; // Adjust as needed to avoid stretching
+  min-height: 40vh;
+  height: auto;
+  max-width: 100%;
+}
+
+.face-recognition-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .face-recognition img {
@@ -239,9 +255,11 @@ async function login(): Promise<void> {
   height: auto;
   object-fit: contain;
 }
+
 .name {
   text-align: center;
 }
+
 .userId {
   margin-bottom: 2rem;
 }
@@ -249,38 +267,32 @@ async function login(): Promise<void> {
 .userId-inputtext {
   width: 20rem;
 }
+
 .password {
   margin-bottom: 1rem;
 }
+
 .password-inputtext {
   :deep(.p-inputtext) {
     width: 20rem;
   }
 }
+
 .submit-button {
   width: 20rem;
   margin-bottom: 0rem;
   display: block;
 }
-.face {
-  margin-top: 2rem;
-}
+
 .forget-button {
   width: 20rem;
   display: block;
   font-size: small;
   padding: 0.5rem;
 }
-.or {
-  text-align: center;
-  border-bottom: 1px solid #000;
-  line-height: 0.1em;
-  width: 100%;
-}
 
-.or span {
-  background: white;
-  padding: 0 0.5rem;
+.face-recognition-feed {
+  margin-top: 0.5rem;
 }
 
 .checkbox {
