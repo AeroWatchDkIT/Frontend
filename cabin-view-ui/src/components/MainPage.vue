@@ -2,33 +2,6 @@
   <div class="main-container">
     <img :src="props.cameraFeedUrl" alt="Camera Feed" class="camera-feed" />
 
-    <!-- Split rectangles for displaying match information -->
-    <!-- <div class="info-display">
-      <h3>Pallet Tags</h3>
-      <div class="info-part pallet" :class="{ match: pallet !== '' }">
-        
-        <p>{{ pallet }}</p>
-      </div>
-      <h3>Shelf Tags</h3>
-      <div class="info-part shelf-tag" :class="{ match: place !== '' }">
-        
-        <p>{{ place }}</p>
-      </div>
-    </div> -->
-    // The above code is replaced with the below code
-    <!-- <div class="info-display">
-      <div class="info-part pallet" :class="{ match: pallet.updated }">
-        <h3>Pallet Tag</h3>
-        <p>{{ pallet.text }}</p>
-        <small>Recognized at: {{ pallet.time }}</small>
-      </div>
-      <div class="info-part shelf-tag" :class="{ match: place.updated }">
-        <h3>Shelf Tag</h3>
-        <p>{{ place.text }}</p>
-        <small>Recognized at: {{ place.time }}</small>
-      </div>
-    </div> -->
-
     <div class="info-display">
       <div
         class="info-part pallet"
@@ -84,6 +57,7 @@
       </Button>
     </div>
     <DynamicDialog
+      v-if="alertModalVisible"
       class="alertTest"
       :pt="{
         content: {
@@ -95,6 +69,7 @@
           },
         },
       }"
+      @onHide="alertModalVisible = false"
     />
     <CameraInfoToast
       :recognition-time="props.recognitionTime"
@@ -111,23 +86,23 @@ import DynamicDialog from "primevue/dynamicdialog";
 import CameraInfoToast from "./CameraInfoToast.vue";
 import MissingPallet from "./MissingPallet.vue";
 import AlertModal from "./AlertModal.vue";
-import { useDialog } from "primevue/usedialog";
 import { ref, watch, toRef } from "vue";
 import { useRouter } from "vue-router";
 
+import { useDialog } from "primevue/usedialog";
+
+const dialog = useDialog();
 const props = defineProps({
   cameraFeedUrl: String,
   recognizedText: String,
   recognitionTime: String,
 });
 
-const dialog = useDialog();
 const router = useRouter();
 const data = toRef(props, "recognizedText");
-//const pallet = ref({ text: "", time: "", updated: false });
-//const place = ref({ text: "", time: "", updated: false });
 const pallet = ref({ text: "", time: "", updated: false, matching: false });
 const place = ref({ text: "", time: "", updated: false, matching: false });
+let alertModalVisible = false;
 
 function updateTagData(tagType: string, text: string) {
   const time = new Date().toLocaleTimeString();
@@ -144,24 +119,10 @@ function updateTagData(tagType: string, text: string) {
   }
 }
 
-// Function to check if the tags match, ignoring the first two characters
-// function checkForMatch() {
-//   if (pallet.value.text && place.value.text && !compareIgnoringFirstTwo(pallet.value.text, place.value.text)) {
-//     pallet.value.matching = true;
-//     place.value.matching = true;
-//     // Optionally, you could also show an alert dialog if they match
-//     // showAlertDialog();
-//   } else {
-//     pallet.value.matching = false;
-//     place.value.matching = false;
-//   }
-// }
 function checkForMatch() {
-  // Extract the codes by removing the first two characters
   const palletCode = pallet.value.text.substring(2);
   const placeCode = place.value.text.substring(2);
 
-  // Check if codes match and update the matching flag accordingly
   if (palletCode === placeCode && palletCode !== "") {
     pallet.value.matching = true;
     place.value.matching = true;
@@ -171,7 +132,6 @@ function checkForMatch() {
   }
 }
 
-//update the divs with the new values
 watch(
   () => props.recognizedText,
   (newValue) => {
@@ -213,43 +173,49 @@ function compareIgnoringFirstTwo(str1: string, str2: string): boolean {
 }
 
 function showAlertDialog(): void {
-  dialog.open(AlertModal, {
-    props: {
-      style: {
-        width: "30vw",
-        borderRadius: "2rem",
+  if (!alertModalVisible) {
+    alertModalVisible = true;
+    dialog.open(AlertModal, {
+      props: {
+        style: {
+          width: "30vw",
+          borderRadius: "2rem",
+        },
+        breakpoints: {
+          "960px": "75vw",
+          "640px": "90vw",
+        },
+        modal: true,
+        closable: false,
+        showHeader: false,
       },
-      breakpoints: {
-        "960px": "75vw",
-        "640px": "90vw",
+      data: {
+        pallet: pallet.value,
+        place: place.value,
       },
-      modal: true,
-      closable: false,
-      showHeader: false,
-    },
-    data: {
-      pallet: pallet.value,
-      place: place.value,
-    },
-  });
+    });
+  }
 }
 
 function showMissingPalletDialog(): void {
-  dialog.open(MissingPallet, {
-    props: {
-      style: {
-        width: "30vw",
-        borderRadius: "2rem",
+  if (!alertModalVisible) {
+    alertModalVisible = true;
+    dialog.open(MissingPallet, {
+      props: {
+        style: {
+          width: "30vw",
+          borderRadius: "2rem",
+        },
+        breakpoints: {
+          "960px": "75vw",
+          "640px": "90vw",
+        },
+        modal: true,
+        closable: false,
+        header: "Alert Missing Pallet",
       },
-      breakpoints: {
-        "960px": "75vw",
-        "640px": "90vw",
-      },
-      modal: true,
-      closable: false,
-      header: "Alert Missing Pallet",
-    },
-  });
+    });
+  }
 }
 
 function logout(): void {
