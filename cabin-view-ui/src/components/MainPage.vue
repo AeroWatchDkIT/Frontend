@@ -30,21 +30,25 @@
     </div> -->
 
     <div class="info-display">
-      <div class="info-part pallet" :class="{ 'tag-match': pallet.matching, 'no-tags': !pallet.text }">
+      <div
+        class="info-part pallet"
+        :class="{ 'tag-match': pallet.matching, 'no-tags': !pallet.text }"
+      >
         <h3 v-if="pallet.matching">Tags Matching</h3>
         <h3 v-else>Pallet Tag</h3>
         <p>{{ pallet.text }}</p>
         <small>Recognized at: {{ pallet.time }}</small>
       </div>
-      <div class="info-part shelf-tag" :class="{ 'tag-match': place.matching, 'no-tags': !place.text }">
+      <div
+        class="info-part shelf-tag"
+        :class="{ 'tag-match': place.matching, 'no-tags': !place.text }"
+      >
         <h3 v-if="place.matching">Tags Matching</h3>
         <h3 v-else>Shelf Tag</h3>
         <p>{{ place.text }}</p>
         <small>Recognized at: {{ place.time }}</small>
       </div>
     </div>
-
-   
 
     <div class="leftside-buttons">
       <Button
@@ -108,7 +112,7 @@ import CameraInfoToast from "./CameraInfoToast.vue";
 import MissingPallet from "./MissingPallet.vue";
 import AlertModal from "./AlertModal.vue";
 import { useDialog } from "primevue/usedialog";
-import { ref, watch, toRef } from "vue";s
+import { ref, watch, toRef } from "vue";
 import { useRouter } from "vue-router";
 
 const props = defineProps({
@@ -125,14 +129,18 @@ const data = toRef(props, "recognizedText");
 const pallet = ref({ text: "", time: "", updated: false, matching: false });
 const place = ref({ text: "", time: "", updated: false, matching: false });
 
-function updateTagData(tagType, text) {
+function updateTagData(tagType: string, text: string) {
   const time = new Date().toLocaleTimeString();
-  if (tagType === 'pallet') {
+  if (tagType === "pallet") {
     pallet.value = { text, time, updated: true, matching: false }; // Ensure 'matching' is reset on each update
-    setTimeout(() => { pallet.value.updated = false; }, 2000); // Clear updated status after delay
-  } else if (tagType === 'place') {
+    setTimeout(() => {
+      pallet.value.updated = false;
+    }, 2000); // Clear updated status after delay
+  } else if (tagType === "place") {
     place.value = { text, time, updated: true, matching: false }; // Ensure 'matching' is reset on each update
-    setTimeout(() => { place.value.updated = false; }, 2000); // Clear updated status after delay
+    setTimeout(() => {
+      place.value.updated = false;
+    }, 2000); // Clear updated status after delay
   }
 }
 
@@ -164,33 +172,41 @@ function checkForMatch() {
 }
 
 //update the divs with the new values
-watch(() => props.recognizedText, (newValue) => {
-  if (!newValue) {
-    // Reset both pallet and place data when there is no recognized text
-    pallet.value = { text: "", time: "", updated: false, matching: false };
-    place.value = { text: "", time: "", updated: false, matching: false };
-    return;
-  }
+watch(
+  () => props.recognizedText,
+  (newValue) => {
+    if (!newValue) {
+      // Reset both pallet and place data when there is no recognized text
+      pallet.value = { text: "", time: "", updated: false, matching: false };
+      place.value = { text: "", time: "", updated: false, matching: false };
+      return;
+    }
 
-  if (newValue.startsWith("P-")) {
-    if (place.value.text && compareIgnoringFirstTwo(newValue, place.value.text)) {
-      showAlertDialog();
+    if (newValue.startsWith("P-")) {
+      if (
+        place.value.text &&
+        compareIgnoringFirstTwo(newValue, place.value.text)
+      ) {
+        showAlertDialog();
+      }
+      updateTagData("pallet", newValue);
+      if (place.value.text) {
+        checkForMatch();
+      }
+    } else if (newValue.startsWith("S-")) {
+      if (
+        pallet.value.text &&
+        compareIgnoringFirstTwo(pallet.value.text, newValue)
+      ) {
+        showAlertDialog();
+      }
+      updateTagData("place", newValue);
+      if (pallet.value.text) {
+        checkForMatch();
+      }
     }
-    updateTagData('pallet', newValue);
-    if (place.value.text) {
-      checkForMatch();
-    }
-  } else if (newValue.startsWith("S-")) {
-    if (pallet.value.text && compareIgnoringFirstTwo(pallet.value.text, newValue)) {
-      showAlertDialog();
-    }
-    updateTagData('place', newValue);
-    if (pallet.value.text) {
-      checkForMatch();
-    }
-  }
-});
-
+  },
+);
 
 function compareIgnoringFirstTwo(str1: string, str2: string): boolean {
   return str1?.substring(2) !== str2?.substring(2);
@@ -268,19 +284,19 @@ function logout(): void {
   margin-top: 5px;
 }
 .info-display {
-  position: absolute;  // Positioned absolutely relative to the main container
-  top: 53%;            // Center vertically
-  right: 10px;         // 10px from the right edge of the main container
+  position: absolute; // Positioned absolutely relative to the main container
+  top: 53%; // Center vertically
+  right: 10px; // 10px from the right edge of the main container
   transform: translateY(-50%); // This will vertically center it at 'top: 50%'
-  width: 18%;          // Adjust width as needed
-  height: auto;        // Height will depend on content
+  width: 18%; // Adjust width as needed
+  height: auto; // Height will depend on content
   background-color: rgba(255, 255, 255, 0.8); // Semi-transparent background
   padding: 10px;
   border-radius: 5px; // Optional: rounded corners
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  z-index: 100;       // Make sure it's above the video feed
+  z-index: 100; // Make sure it's above the video feed
 }
 .info-part {
   border: 1px solid #ccc; /* Default border color */
@@ -289,13 +305,14 @@ function logout(): void {
 }
 
 .tag-match {
-  border-color: #4CAF50; /* Green border to indicate a match */
+  border-color: #4caf50; /* Green border to indicate a match */
   background-color: #e6f9e6; /* Light green background for visibility */
   animation: flashMatch 1s ease-out;
 }
 
 @keyframes flashMatch {
-  0%, 100% {
+  0%,
+  100% {
     background-color: #e6f9e6;
   }
   50% {
@@ -387,8 +404,6 @@ h3 {
     color: black;
   }
 }
-
-
 </style>
 
 <!--
