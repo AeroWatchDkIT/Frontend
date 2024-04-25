@@ -2,9 +2,6 @@ import type { User } from "../types/user";
 
 export default class UserService {
     static async getUserAuth(userId: string, passcode: string, requestFromAdmin:boolean): Promise<string> {
-        console.log('userId',userId)
-        console.log('passcode',passcode)
-        console.log('requestFromAdmin',requestFromAdmin)
         const apiUrl = `${import.meta.env.VITE_USER_AUTH}?userId=${userId.trim()}&passCode=${passcode.trim()}&requestFromAdmin=${requestFromAdmin}`;
         try {
             const response = await fetch(apiUrl, {
@@ -26,8 +23,6 @@ export default class UserService {
     }
 
     static async forgetPassword(userId: string, newPass:string): Promise<string> {
-        console.log('userId',userId)
-        console.log('newPass',newPass)
         const apiUrl = `${import.meta.env.VITE_FORGET_PASSWORD}?id=${userId.trim()}&newPassword=${newPass.trim()}`;
         try {
             const response = await fetch(apiUrl, {

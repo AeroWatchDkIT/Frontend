@@ -23,8 +23,6 @@ const fetchInterval = ref<NodeJS.Timeout | null>(null);
 
 onMounted(async () => {
   await fetchRecognizedText();
-  //await fetchCameraFeedUrl();
-  //fetchInterval.value = setInterval(fetchCameraFeedUrl, 5000);
   fetchInterval.value = setInterval(fetchRecognizedText, 5000);
 });
 
@@ -34,32 +32,13 @@ onUnmounted(() => {
   }
 });
 
-async function fetchCameraFeedUrl(): Promise<void> {
-  try {
-    const response = await fetch(import.meta.env.VITE_CAMERA_HOST_API);
-    if (response.ok) {
-      const data = await response.json();
-      cameraFeedUrl.value = data.cameraFeedUrl;
-      console.log("Fetched camera feed URL:", data.cameraFeedUrl);
-    } else {
-      console.error("Error fetching camera feed URL");
-    }
-  } catch (error) {
-    console.error("Error fetching camera feed URL:", error);
-  }
-}
-
 async function fetchRecognizedText(): Promise<void> {
   try {
     const response = await fetch(import.meta.env.VITE_DETECTED_CODE);
-    console.log("Response:", response);
     if (response.ok) {
       const data = await response.json();
       recognizedText.value = data.detected_text;
       recognitionTime.value = data.detection_time;
-      console.log(data);
-      console.log("Fetched text:", data.detected_text);
-      console.log("Detection time:", data.detection_time);
     } else {
       console.error("Error fetching recognized text bbbbb");
     }

@@ -1,7 +1,6 @@
 <template>
   <div class="login-container">
     <div class="logo-container">
-      <!-- Company logo at the top, centered -->
       <img
         src="@/assets/Palletsynclogo.png"
         alt="PalletSync Logo"
@@ -65,7 +64,6 @@ import { useToast } from "primevue/usetoast";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useUserStore } from "@/stores";
 import { useRouter } from "vue-router";
-import { time } from "console";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -74,17 +72,14 @@ const userId = ref("");
 const password = ref("");
 const requestLogin = ref(false);
 const loginString = ref("");
-const faceRecognvideoFeedUrl = ref("http://127.0.0.1:5000/video_feed");
-//const faceRecognvideoFeedUrl = ref('http://192.168.167.168:5000/video_feed');
+const faceRecognvideoFeedUrl = ref(import.meta.env.VITE_FACE_RECOGNITION_FEED);
 
 const isProcessing = ref(false);
 const fetchInterval = ref<NodeJS.Timeout | null>(null);
-const recognizedUser = ref("");
 
 onMounted(async () => {
   await fetchRecognizedText();
   fetchInterval.value = setInterval(fetchRecognizedText, 5000);
-  sessionStorage.setItem("loggedIn", "true");
 });
 
 onUnmounted(() => {
@@ -98,11 +93,9 @@ const handleFaceRecognition = async () => {
   isProcessing.value = true;
 
   try {
-    await fetch("http://127.0.0.1:5000/trigger_face_recognition", {
-      //await fetch("http://192.168.167.168:5000/trigger_face_recognition", {
+    await fetch(import.meta.env.VITE_TRIGGER_FACE_RECOGNITION, {
       method: "POST",
     });
-    console.log("Face recognition triggered");
     isProcessing.value = false;
   } catch (error) {
     console.error("Error triggering face recognition:", error);
@@ -117,17 +110,12 @@ const handleFaceRecognition = async () => {
 
 async function fetchRecognizedText(): Promise<void> {
   try {
-    const response = await fetch("http://127.0.0.1:5000/get_access_status");
-    //const response = await fetch("http://192.168.167.168:5000/get_access_status");
-
-    console.log("Response:", response);
+    const response = await fetch(import.meta.env.VITE_ACCESS_STATUS);
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
-      console.log("Fetched text:", data.access_granted);
       if (data.access_granted == true) {
         sessionStorage.setItem("loggedIn", "true");
-        await stopFaceRecognition(); // Stop the face recognition process
+        await stopFaceRecognition();
         toast.add({
           severity: "success",
           summary: "Access Granted",
@@ -138,12 +126,12 @@ async function fetchRecognizedText(): Promise<void> {
           router.push("/main");
         }, 3000);
       } else if (data.access_granted == false) {
-        // toast.add({
-        //   severity: "error",
-        //   summary: "Access Denied",
-        //   detail: "You have been denied access",
-        //   life: 4000,
-        // });
+        toast.add({
+          severity: "error",
+          summary: "Access Denied",
+          detail: "You have been denied access",
+          life: 4000,
+        });
       }
     } else {
       console.error("Error fetching recognized text bbbbb");
@@ -155,10 +143,9 @@ async function fetchRecognizedText(): Promise<void> {
 
 const stopFaceRecognition = async () => {
   try {
-    await fetch("http://127.0.0.1:5000/stop_face_recognition", {
+    await fetch(import.meta.env.VITE_STOP_FACE_RECOGNITION, {
       method: "POST",
     });
-    console.log("Face recognition stopped");
   } catch (error) {
     console.error("Error stopping face recognition:", error);
     toast.add({
@@ -193,16 +180,16 @@ async function login(): Promise<void> {
 <style scoped lang="scss">
 .logo-container {
   display: flex;
-  justify-content: center; // Center the logo horizontally
-  width: 800px; // Adjust to match the width of the two divs
+  justify-content: center;
+  width: 800px;
 }
 
 .company-logo {
-  max-width: 100%; // Adjusts the size of the logo
-  height: auto; // Maintains aspect ratio
+  max-width: 100%;
+  height: auto;
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
-  overflow: hidden; // Ensures any overflow is clipped
+  overflow: hidden;
 }
 
 .login-container {
@@ -224,7 +211,7 @@ async function login(): Promise<void> {
   padding: 2rem;
   padding-top: 0.5rem;
   border-bottom-left-radius: 0.5rem;
-  width: 400px; // Adjust as needed to avoid stretching
+  width: 400px;
   min-height: 40vh;
   height: auto;
   max-width: 100%;
@@ -243,7 +230,7 @@ form {
   padding-bottom: 4rem;
   border-bottom-right-radius: 0.5rem;
   border-left: 1px solid #d3d3d3;
-  width: 400px; // Adjust as needed to avoid stretching
+  width: 400px;
   min-height: 40vh;
   height: auto;
   max-width: 100%;
