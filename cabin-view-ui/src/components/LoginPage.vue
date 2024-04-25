@@ -229,6 +229,13 @@ async function login(): Promise<void> {
   height: auto;
   max-width: 100%;
 }
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
 .face-recognition {
   background-color: #fff;
   padding: 2rem;
@@ -265,7 +272,7 @@ async function login(): Promise<void> {
 }
 
 .userId-inputtext {
-  width: 20rem;
+  width: 100%;
 }
 
 .password {
@@ -274,18 +281,18 @@ async function login(): Promise<void> {
 
 .password-inputtext {
   :deep(.p-inputtext) {
-    width: 20rem;
+    width: 21rem;
   }
 }
 
 .submit-button {
-  width: 20rem;
+  width: 100%;
   margin-bottom: 0rem;
   display: block;
 }
 
 .forget-button {
-  width: 20rem;
+  width: 100%;
   display: block;
   font-size: small;
   padding: 0.5rem;
