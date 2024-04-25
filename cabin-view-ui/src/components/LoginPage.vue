@@ -80,6 +80,7 @@ const fetchInterval = ref<NodeJS.Timeout | null>(null);
 onMounted(async () => {
   await fetchRecognizedText();
   fetchInterval.value = setInterval(fetchRecognizedText, 5000);
+  sessionStorage.setItem("loggedIn", "true");
 });
 
 onUnmounted(() => {

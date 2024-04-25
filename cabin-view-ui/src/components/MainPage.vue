@@ -180,6 +180,7 @@ function compareIgnoringFirstTwo(str1: string, str2: string): boolean {
 
 function showAlertDialog(): void {
   if (!isDialogOpen.value) {
+    isDialogOpen.value = true;
     dialog.open(AlertModal, {
       props: {
         style: {
@@ -198,12 +199,16 @@ function showAlertDialog(): void {
         pallet: pallet.value.text,
         place: place.value.text,
       },
+      onClose: () => {
+        isDialogOpen.value = false;
+      },
     });
   }
 }
 
 function showMissingPalletDialog(): void {
   if (!isDialogOpen.value) {
+    isDialogOpen.value = true;
     dialog.open(MissingPallet, {
       props: {
         style: {
@@ -217,6 +222,9 @@ function showMissingPalletDialog(): void {
         modal: true,
         closable: false,
         header: "Alert Missing Pallet",
+      },
+      onClose: () => {
+        isDialogOpen.value = false;
       },
     });
   }
