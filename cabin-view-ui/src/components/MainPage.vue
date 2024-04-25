@@ -70,19 +70,7 @@
         </template>
       </Button>
     </div>
-    <DynamicDialog
-      class="alertTest"
-      :pt="{
-        content: {
-          style: {
-            'border-top-left-radius': '2rem',
-            'border-top-right-radius': '2rem',
-            'border-bottom-right-radius': '2rem',
-            'border-bottom-left-radius': '2rem',
-          },
-        },
-      }"
-    />
+    <DynamicDialog />
   </div>
 </template>
 
@@ -185,7 +173,6 @@ function showAlertDialog(): void {
       props: {
         style: {
           width: "30vw",
-          borderRadius: "2rem",
         },
         breakpoints: {
           "960px": "75vw",
@@ -193,7 +180,6 @@ function showAlertDialog(): void {
         },
         modal: true,
         closable: false,
-        showHeader: false,
       },
       data: {
         pallet: pallet.value.text,
@@ -213,7 +199,6 @@ function showMissingPalletDialog(): void {
       props: {
         style: {
           width: "30vw",
-          borderRadius: "2rem",
         },
         breakpoints: {
           "960px": "75vw",
@@ -352,14 +337,6 @@ h3 {
   width: 3rem;
   height: 3rem;
   color: white;
-}
-
-.alertTest {
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  width: 5rem;
-  height: 5rem;
 }
 
 .alert-button {
