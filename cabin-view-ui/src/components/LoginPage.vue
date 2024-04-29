@@ -43,10 +43,10 @@
             alt="Face Recognition Feed"
             class="face-recognition-feed"
           />
-          <Button class="submit-button face" @click="handleFaceRecognition"
-            >Face Recognition</Button
-          >
         </div>
+        <Button class="submit-button face" @click="handleFaceRecognition"
+          >Face Recognition</Button
+        >
       </div>
     </div>
   </div>
@@ -125,13 +125,6 @@ async function fetchRecognizedText(): Promise<void> {
         setTimeout(() => {
           router.push("/main");
         }, 3000);
-      } else if (data.access_granted == false) {
-        toast.add({
-          severity: "error",
-          summary: "Access Denied",
-          detail: "You have been denied access",
-          life: 4000,
-        });
       }
     } else {
       console.error("Error fetching recognized text bbbbb");
@@ -224,6 +217,9 @@ form {
   height: 100%;
 }
 .face-recognition {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   background-color: #fff;
   padding: 2rem;
   padding-top: 0.5rem;
@@ -237,10 +233,10 @@ form {
 }
 
 .face-recognition-content {
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
 }
 
 .face-recognition img {
@@ -248,6 +244,11 @@ form {
   max-height: 100%;
   height: auto;
   object-fit: contain;
+}
+
+.face {
+  align-self: flex-end;
+  margin-top: auto;
 }
 
 .name {

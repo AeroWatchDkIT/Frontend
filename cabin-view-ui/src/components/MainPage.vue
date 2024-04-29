@@ -1,6 +1,13 @@
 <template>
   <div class="main-container">
     <img :src="props.cameraFeedUrl" alt="Camera Feed" class="camera-feed" />
+    <div class="floating-logo">
+      <img
+        src="@/assets/Palletsynclogo.png"
+        alt="PalletSync Logo"
+        class="company-logo"
+      />
+    </div>
     <div class="info-display">
       <div
         class="info-part pallet"
@@ -222,6 +229,19 @@ function logout(): void {
 </script>
 
 <style scoped lang="scss">
+.floating-logo {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  opacity: 0.75;
+}
+
+.company-logo {
+  height: 100px;
+  border-radius: 10px;
+}
 .main-container {
   position: relative;
   width: 100%;
