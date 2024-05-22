@@ -16,6 +16,14 @@ npm install -g @vue/cli
 npm install
 ```
 
+## Environments setup
+view .env file and change accordingly
+```
+Database URLs: Change URLs based on chosen database method (Localhost or Hosted).
+Face Recognition URLs: Change URLs based on local camera's ip.
+Raspberry pi URLs: Change URLs based on raspberry pi's ip.
+```
+
 ### Run project
 ```
 npm run dev
